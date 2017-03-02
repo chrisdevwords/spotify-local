@@ -1,0 +1,40 @@
+{
+  "name": "spotify-local",
+  "version": "0.0.1",
+  "description": "Local Express server that controls Spotify through REST endpoints.",
+  "main": "app/server.js",
+  "engines": {
+    "node": "6.9.4"
+  },
+  "scripts": {
+    "test": "mocha ./test",
+    "lint": "eslint app --ignore-path .gitignore",
+    "start": "PORT=5000 node app/server.js",
+    "start:dev": "PORT=5000 nodemon app/server.js",
+    "tunnel": "ngrok http 5000"
+  },
+  "keywords": [
+    "spotify",
+    "express"
+  ],
+  "repository": "https://github.com/chrisdevwords/spotify-local",
+  "author": "Chris Edwards <chrisedwards82@gmail.com> (http://github.com/chrisdevwords)",
+  "license": "GNU",
+  "dependencies": {
+    "applescript": "^1.0.0",
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
+    "morgan": "^1.8.1",
+    "ngrok": "^2.2.6",
+    "request-promise-native": "^1.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0",
+    "eslint": "^3.14.1",
+    "eslint-config-airbnb": "^14.0.0",
+    "eslint-plugin-babel": "^4.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.2.0",
+    "supertest": "^3.0.0"
+  }
+}

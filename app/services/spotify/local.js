@@ -12,8 +12,8 @@ const SCRIPT_RESUME = 'tell application "Spotify" to play';
 const SCRIPT_PLAY = track =>
     `tell application "Spotify" to play track "${track}"`;
 const SCRIPT_PLAYLIST = pl =>
-    `tell application "Spotify" to play playlist "${pl}"`;
-const _defaultPlaylist = '2HSnhAB2ugTyXcWteTOOKy';
+    `tell application "Spotify" to play track "${pl}"`;
+const _defaultPlaylist = 'spotify:user:spotify_uk_:playlist:2HSnhAB2ugTyXcWteTOOKy';
 const _queue = [];
 let _playlist = _defaultPlaylist;
 let _currentTrack;
@@ -55,6 +55,11 @@ function nowPlaying() {
                 name,
                 artist
             };
+        })
+        .then((currentTrack) => {
+            start();
+            //console.log('currentTrack', currentTrack);
+            return currentTrack;
         });
 }
 
@@ -83,7 +88,8 @@ function checkCurrentTrack() {
         .then((trackInfo) => {
             if (!trackInfo.uri) {
                 //console.log('need to play playlist', trackInfo);
-                return shufflePlaylist(_playlist);
+                return shufflePlaylist(_playlist)
+                    .then(nowPlaying); // todo should run on a timeout
             }
             if (!_currentTrack) {
                 _currentTrack = Object.assign({
@@ -115,7 +121,7 @@ function queueTrack(track) {
 
 function start() {
     clearInterval(_timer);
-    setInterval(checkCurrentTrack, 250);
+    _timer = setTimeout(checkCurrentTrack, 250);
 }
 
 module.exports = {

@@ -10,6 +10,7 @@ const SCRIPT_NOW_PLAYING = PATH.resolve(
 const SCRIPT_STATUS = 'tell application "Spotify" to return player state';
 const SCRIPT_PAUSE = 'tell application "Spotify" to pause';
 const SCRIPT_RESUME = 'tell application "Spotify" to play';
+const SCRIPT_NEXT = 'tell application "Spotify" to play next track';
 const SCRIPT_PLAY = track =>
     `tell application "Spotify" to play track "${track}"`;
 const SCRIPT_PLAYLIST = pl =>
@@ -21,6 +22,7 @@ const _defaultPlaylist = {
     uri: URI_PLAYLIST('2HSnhAB2ugTyXcWteTOOKy'),
     title: 'Default Playlist'
 };
+
 const _queue = [];
 let _playlist = _defaultPlaylist;
 let _currentTrack;
@@ -84,9 +86,11 @@ function playTrack(track) {
 function shufflePlaylist(playlist) {
     // eslint-disable-next-line babel/new-cap
     return execString(SCRIPT_PLAYLIST(playlist.uri))
+        // todo add command to shuffle
        .then(() => {
            _playlist = playlist;
-           return nowPlaying();
+           // eslint-disable-next-line no-use-before-define
+           return checkCurrentTrack();
        });
 }
 
@@ -118,6 +122,32 @@ function checkCurrentTrack() {
         });
 }
 
+function nextTrack() {
+
+    const skippedTrack = _currentTrack;
+
+    if (_queue.length) {
+        return playTrack(_queue.shift())
+            .then(checkCurrentTrack)
+            .then(currentTrack => ({
+                skippedTrack,
+                currentTrack
+            }));
+    }
+    return execString(SCRIPT_NEXT)
+        .then(checkCurrentTrack)
+        .then((currentTrack) => {
+            if (currentTrack.uri === skippedTrack.uri) {
+                return shufflePlaylist(_playlist);
+            }
+            return currentTrack;
+        })
+        .then(currentTrack => ({
+            skippedTrack,
+            currentTrack
+        }));
+}
+
 function queueTrack(track) {
     const position = _queue.push(track);
     return Promise.resolve({
@@ -141,6 +171,7 @@ function start() {
 }
 
 module.exports = {
+    nextTrack,
     queueTrack,
     playTrack,
     start,

@@ -7,13 +7,11 @@ const TRACK_ENDPOINT = trackId => `${API_BASE}v1/tracks/${trackId}`;
 
 function extractID(val) {
 
-    let i = val.indexOf('://');
-    let s;
+    const i = val.indexOf('://');
+    let s = val;
 
     if (i > -1) {
         s = val.slice(i + 3, val.length);
-    } else {
-        s = val;
     }
 
     let id = s.split(':').pop();
@@ -21,7 +19,8 @@ function extractID(val) {
     if (id === s) {
         id = s.split('/').pop()
     }
-    return id || val;
+
+    return id;
 }
 
 function findTrack(track) {

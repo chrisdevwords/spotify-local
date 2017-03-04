@@ -1,0 +1,65 @@
+{
+  "album" : {
+    "album_type" : "album",
+    "artists" : [ {
+      "external_urls" : {
+        "spotify" : "https://open.spotify.com/artist/5lpH0xAS4fVfLkACg9DAuM"
+      },
+      "href" : "https://api.spotify.com/v1/artists/5lpH0xAS4fVfLkACg9DAuM",
+      "id" : "5lpH0xAS4fVfLkACg9DAuM",
+      "name" : "Wham!",
+      "type" : "artist",
+      "uri" : "spotify:artist:5lpH0xAS4fVfLkACg9DAuM"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TR", "TW", "US", "UY" ],
+    "external_urls" : {
+      "spotify" : "https://open.spotify.com/album/6vihnceXTNegYbpurc6qkR"
+    },
+    "href" : "https://api.spotify.com/v1/albums/6vihnceXTNegYbpurc6qkR",
+    "id" : "6vihnceXTNegYbpurc6qkR",
+    "images" : [ {
+      "height" : 634,
+      "url" : "https://i.scdn.co/image/c5adfbd185d2d528fb45d1930525d86653b61b2c",
+      "width" : 640
+    }, {
+      "height" : 297,
+      "url" : "https://i.scdn.co/image/93616ba843288401df2b2e3ff863cc0b3a01bb09",
+      "width" : 300
+    }, {
+      "height" : 63,
+      "url" : "https://i.scdn.co/image/f9b200cdac025a98edf73c29a3bb0c8e09c75959",
+      "width" : 64
+    } ],
+    "name" : "Fantastic",
+    "type" : "album",
+    "uri" : "spotify:album:6vihnceXTNegYbpurc6qkR"
+  },
+  "artists" : [ {
+    "external_urls" : {
+      "spotify" : "https://open.spotify.com/artist/5lpH0xAS4fVfLkACg9DAuM"
+    },
+    "href" : "https://api.spotify.com/v1/artists/5lpH0xAS4fVfLkACg9DAuM",
+    "id" : "5lpH0xAS4fVfLkACg9DAuM",
+    "name" : "Wham!",
+    "type" : "artist",
+    "uri" : "spotify:artist:5lpH0xAS4fVfLkACg9DAuM"
+  } ],
+  "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TR", "TW", "US", "UY" ],
+  "disc_number" : 1,
+  "duration_ms" : 265600,
+  "explicit" : false,
+  "external_ids" : {
+    "isrc" : "GBBBM8300007"
+  },
+  "external_urls" : {
+    "spotify" : "https://open.spotify.com/track/6tASfEUyB7lE2r6DLzURji"
+  },
+  "href" : "https://api.spotify.com/v1/tracks/6tASfEUyB7lE2r6DLzURji",
+  "id" : "6tASfEUyB7lE2r6DLzURji",
+  "name" : "Club Tropicana",
+  "popularity" : 55,
+  "preview_url" : "https://p.scdn.co/mp3-preview/24aaf17d49770edbda270dc6fa7f79750e1c0460?cid=null",
+  "track_number" : 7,
+  "type" : "track",
+  "uri" : "spotify:track:6tASfEUyB7lE2r6DLzURji"
+}

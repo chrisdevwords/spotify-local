@@ -1,9 +1,49 @@
 
-const {  describe, it } = require('mocha');
+const PATH = require('path');
+const fs = require('fs');
+const sinon = require('sinon');
+const request = require('request-promise-native');
+const {  describe, it, beforeEach, afterEach } = require('mocha');
 const { expect } = require('chai');
 const { extractID, findTrack } = require('../../../app/services/spotify/api');
 
+
+const openMock = (options) => {
+    const id = options.uri.split('/').pop();
+    const ROOT = '../../../';
+    const filePath = PATH.resolve(__dirname, ROOT, `test/mock/spotify/tracks/${id}.json`);
+    return new Promise((resolve, reject) => {
+        fs.readFile(filePath, (error, data) => {
+            if(error) {
+                reject(error);
+            } else {
+                const json = JSON.parse(data.toString());
+                if (json.error) {
+                    reject({
+                        message: json.error.message,
+                        statusCode : json.error.status
+                    });
+                } else {
+                    resolve(json);
+                }
+            }
+        });
+    });
+};
+
 describe('The Spotify API Helper', () => {
+
+    beforeEach((done) => {
+        sinon
+            .stub(request, 'get', openMock);
+        done();
+
+    });
+
+    afterEach((done) => {
+        request.get.restore();
+        done();
+    });
 
     describe('extractID', () => {
         context('with a uri for a Spotify Track', () => {

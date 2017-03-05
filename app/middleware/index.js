@@ -1,7 +1,12 @@
 
+const PATH = require('path');
+const nunjucks = require('nunjucks');
+const express = require('express');
 const morgan = require('morgan');
 const body = require('body-parser');
 
+
+const ROOT = '../../';
 
 function configure(app) {
 
@@ -20,6 +25,25 @@ function configure(app) {
         );
         next();
     });
+
+    app.use(express.static(
+        PATH.resolve(__dirname, ROOT, 'app/public/assets')
+    ));
+
+    // nunjucks template engine
+    const templateDir = PATH.resolve(__dirname, ROOT, 'app/views');
+    app.set('views', templateDir);
+    app.set('view engine', 'html.twig');
+    nunjucks.configure(
+        templateDir,
+        {
+            watch: true,
+            express: app,
+            throwOnUndefined: true,
+            autoescape: true
+        }
+    );
+
     return app;
 }
 

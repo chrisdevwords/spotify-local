@@ -17,8 +17,9 @@ middleware.configure(app);
 app.get('/', (req, res) => {
     const docLink = 'https://app.swaggerhub.com/api/' +
         'chrisdevwords/LocalSpotify/0.0.1';
-    const html = `<a href="${docLink}">View docs</a>`;
-    res.send(html);
+    res.render('index', {
+        docLink
+    })
 });
 app.use('/api/spotify/queue', queue);
 app.use('/api/spotify/playing', playing);

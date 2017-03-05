@@ -32,4 +32,14 @@ router.post('/', (req, res, next) => {
         .catch(next);
 });
 
+router.delete('/', (req, res, next) => {
+
+    spotifyLocal
+        .nextTrack()
+        .then((resp) => {
+            res.json(resp);
+        })
+        .catch(next);
+});
+
 module.exports = router;

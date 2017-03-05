@@ -1,0 +1,29 @@
+{% extends "_global/base.html.twig" %}
+{% block content %}
+    <main class="measure">
+        <header class="p1 txt--center">
+            <h1 class="h1 fnt--green">Office Spotify</h1>
+        </header>
+        <div class="grd">
+            <div class="grd-row m1">
+                <section id="now-playing" class="bg--off-white p2 grd-row-col-3-6--md">
+                    <h1 class="h3 bold">Now Playing:</h1>
+                    <h2 class="h5 fnt--orange m0" id="current-track"></h2>
+                    <h3 class="h5 m0" id="requested-by"></h3>
+                </section>
+                <section id="queue" class="bg--light-gray p2 grd-row-col-3-6--md">
+                    <h1 class="h4 bold">Queued Tracks</h1>
+                    <div id="queued-tracks" class="m0"></div>
+                </section>
+            </div>
+        </div>
+        <footer class="txt--center">
+            <nav>
+                <a href="{{ docLink }}" target="_blank">Read the API Docs.</a>
+            </nav>
+        </footer>
+    </main>
+{% endblock %}
+{%  block body_js %}
+    <script type="text/javascript" src="/js/home.js"></script>
+{% endblock %}

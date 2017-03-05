@@ -10,7 +10,7 @@
     "test": "mocha ./test",
     "lint": "eslint app --ignore-path .gitignore",
     "start": "PORT=5000 node app/server.js",
-    "start:dev": "PORT=5000 nodemon app/server.js",
+    "start:dev": "PORT=5000 nodemon app/server -e js,twig --ignore app/public",
     "tunnel": "ngrok http 5000"
   },
   "keywords": [
@@ -26,6 +26,7 @@
     "express": "^4.14.1",
     "morgan": "^1.8.1",
     "ngrok": "^2.2.6",
+    "nunjucks": "^3.0.0",
     "request-promise-native": "^1.0.3"
   },
   "devDependencies": {

@@ -1,9 +1,11 @@
 
 const request = require('request-promise-native');
 
-
 const API_BASE = 'https://api.spotify.com/';
+const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
 const TRACK_ENDPOINT = trackId => `${API_BASE}v1/tracks/${trackId}`;
+const PLAYLIST_ENDPOINT = (userId, playlistId) =>
+    `${API_BASE}v1/users/${userId}/playlists/${playlistId}`;
 
 function extractID(val) {
 
@@ -21,6 +23,70 @@ function extractID(val) {
     }
 
     return id;
+}
+
+function parsePlaylist(val) {
+    let path;
+    if (val.indexOf('http') > -1) {
+        path = val.substr(
+            val.indexOf('://') + 3,
+            val.length
+        ).split('/');
+    } else {
+        path = val.split(':');
+    }
+    return {
+        userId: path[2],
+        playlistId: path[4]
+    }
+}
+
+function getToken() {
+
+    const { SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env;
+    const creds = `${SPOTIFY_CLIENT_ID}:${SPOTIFY_SECRET}`;
+    const encoded = new Buffer(creds).toString('base64');
+
+    return request
+        .post({
+            uri: TOKEN_ENDPOINT,
+            headers: {
+                Authorization: `Basic ${encoded}`,
+                'content-type': 'application/x-www-form-urlencoded'
+            },
+            body: 'grant_type=client_credentials'
+        })
+        .then(resp =>
+            JSON.parse(resp).access_token
+        )
+        .catch(err =>
+            Promise.reject({
+                statusCode: err.statusCode || 500,
+                message: 'Error getting Spotify Token'
+            })
+        );
+}
+
+function findPlaylist(playlist) {
+
+    const { userId, playlistId } = parsePlaylist(playlist);
+    return getToken()
+        .then(token =>
+            request.get({
+                // eslint-disable-next-line babel/new-cap
+                uri: PLAYLIST_ENDPOINT(userId, playlistId),
+                json: true,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        )
+        .then(({ href, name }) =>
+            ({
+                title: name,
+                href
+            })
+        );
 }
 
 function findTrack(track) {
@@ -54,6 +120,9 @@ function findTrack(track) {
 }
 
 module.exports = {
+    getToken,
     findTrack,
+    findPlaylist,
+    parsePlaylist,
     extractID
 };

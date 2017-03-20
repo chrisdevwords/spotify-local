@@ -5,7 +5,11 @@ const sinon = require('sinon');
 const request = require('request-promise-native');
 const {  describe, it, beforeEach, afterEach } = require('mocha');
 const { expect } = require('chai');
-const { extractID, findTrack } = require('../../../app/services/spotify/api');
+const {
+    extractID,
+    findTrack,
+    parsePlaylist
+} = require('../../../app/services/spotify/api');
 
 
 const openTrackMock = (options) => {
@@ -64,6 +68,53 @@ describe('The Spotify API Helper', () => {
                     .to.eq(id);
                 done();
             });
+        });
+    });
+
+    describe('parsePlaylist', () => {
+        context('with a uri to a Spotify Playlist', () => {
+
+            const playlist = 'spotify:user:awpoops:playlist:41H6FNittv54UTD5TWII82';
+
+            it('extracts the playlist Id', () => {
+                const { playlistId } = parsePlaylist(playlist);
+                expect(playlistId).to.eq('41H6FNittv54UTD5TWII82');
+            });
+
+            it('extracts the user Id', () => {
+                const { userId } = parsePlaylist(playlist);
+                expect(userId).to.eq('awpoops');
+            });
+        });
+
+        context('with an http link to a Spotify Playlist', () => {
+
+            const playlist = 'https://open.spotify.com/user/spotify/playlist/7yza99mVQaqnk4Hqs4T3kq';
+
+            it('extracts the playlist Id', () => {
+                const { playlistId } = parsePlaylist(playlist);
+                expect(playlistId).to.eq('7yza99mVQaqnk4Hqs4T3kq');
+            });
+
+            it('extracts the user Id', () => {
+                const { userId } = parsePlaylist(playlist);
+                expect(userId).to.eq('spotify');
+            });
+        });
+
+        context('with an invalid link', () => {
+            const playlist =  'http://google.com';
+
+            it('returns an undefined playlistId', () => {
+                const { playlistId } = parsePlaylist(playlist);
+                expect(playlistId).to.eq(undefined);
+            });
+
+            it('returns an undefined userId', () => {
+                const { userId } = parsePlaylist(playlist);
+                expect(userId).to.eq(undefined);
+            });
+
         });
     });
 

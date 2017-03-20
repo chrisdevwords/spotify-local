@@ -3,6 +3,7 @@ const express = require('express');
 const ngrok = require('ngrok');
 const queue = require('./routes/api/spotify/queue');
 const playing = require('./routes/api/spotify/playing');
+const playlist = require('./routes/api/spotify/playlist');
 const middleware = require('./middleware');
 const errorManager = require('./middleware/error-manager');
 const spotifyLocal = require('./services/spotify/local');
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
     })
 });
 app.use('/api/spotify/queue', queue);
+app.use('/api/spotify/playlist', playlist);
 app.use('/api/spotify/playing', playing);
 
 errorManager.configure(app);

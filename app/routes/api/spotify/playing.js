@@ -27,7 +27,7 @@ router.post('/', (req, res, next) => {
             )
         )
         .then((resp) => {
-            res.json({ track: resp});
+            res.json({ track: resp });
         })
         .catch(next);
 });

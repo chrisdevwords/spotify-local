@@ -8,10 +8,15 @@ const { expect } = require('chai');
 const { extractID, findTrack } = require('../../../app/services/spotify/api');
 
 
-const openMock = (options) => {
+const openTrackMock = (options) => {
     const id = options.uri.split('/').pop();
     const ROOT = '../../../';
-    const filePath = PATH.resolve(__dirname, ROOT, `test/mock/spotify/tracks/${id}.json`);
+    return openMock(
+        PATH.resolve(__dirname, ROOT, `test/mock/spotify/tracks/${id}.json`)
+    );
+};
+
+const openMock = (filePath) => {
     return new Promise((resolve, reject) => {
         fs.readFile(filePath, (error, data) => {
             if(error) {
@@ -32,18 +37,6 @@ const openMock = (options) => {
 };
 
 describe('The Spotify API Helper', () => {
-
-    beforeEach((done) => {
-        sinon
-            .stub(request, 'get', openMock);
-        done();
-
-    });
-
-    afterEach((done) => {
-        request.get.restore();
-        done();
-    });
 
     describe('extractID', () => {
         context('with a uri for a Spotify Track', () => {
@@ -75,6 +68,19 @@ describe('The Spotify API Helper', () => {
     });
 
     describe('findTrack', () => {
+
+        beforeEach((done) => {
+            sinon
+                .stub(request, 'get', openTrackMock);
+            done();
+
+        });
+
+        afterEach((done) => {
+            request.get.restore();
+            done();
+        });
+
         context('with a uri for a Spotify Track', () => {
             it('fetches the artist', (done) =>{
                 findTrack('19oPsdlHwigJm2Ewk1ypRb')

@@ -1,6 +1,7 @@
 
 const express = require('express');
 const ngrok = require('ngrok');
+const dotenv = require('dotenv');
 const queue = require('./routes/api/spotify/queue');
 const playing = require('./routes/api/spotify/playing');
 const playlist = require('./routes/api/spotify/playlist');
@@ -9,6 +10,8 @@ const errorManager = require('./middleware/error-manager');
 const spotifyLocal = require('./services/spotify/local');
 
 const app = express();
+
+dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';

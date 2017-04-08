@@ -7,7 +7,7 @@
     "node": "6.9.4"
   },
   "scripts": {
-    "test": "mocha ./test",
+    "test": "env PORT=5001 mocha ./test",
     "lint": "eslint app --ignore-path .gitignore",
     "start": "PORT=5000 TUNNEL=true node app/server.js",
     "start:dev": "PORT=5000 nodemon app/server -e js,twig --ignore app/public",

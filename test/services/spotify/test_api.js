@@ -6,9 +6,11 @@ const request = require('request-promise-native');
 const {  describe, it, beforeEach, afterEach } = require('mocha');
 const { expect } = require('chai');
 const {
+    getToken,
     extractID,
     findTrack,
-    parsePlaylist
+    parsePlaylist,
+    TOKEN_ERROR,
 } = require('../../../app/services/spotify/api');
 
 
@@ -118,6 +120,89 @@ describe('The Spotify API Helper', () => {
                 expect(userId).to.eq(undefined);
             });
 
+        });
+    });
+
+    describe('getToken', () => {
+        context('with a valid auth token', () => {
+            beforeEach((done) => {
+                sinon
+                    .stub(request, 'post')
+                    .callsFake(() =>
+                        openMock('spotify/token/success')
+                            .then(JSON.stringify)
+                    );
+                done();
+            });
+
+            afterEach((done) => {
+                request.post.restore();
+                done();
+            });
+
+            it('resolve with an access token', (done) => {
+                getToken()
+                    .then((token) => {
+                        expect(token).to.be.a.string;
+                        done();
+                    })
+                    .catch(done);
+            });
+        });
+
+        context('with missing spotify api creds', () => {
+
+            beforeEach((done) => {
+                sinon
+                    .stub(request, 'post')
+                    .rejects({ statusCode: 400});
+                done();
+            });
+
+            afterEach((done) => {
+                request.post.restore();
+                done();
+            });
+
+            it('throws a 400', (done) => {
+                getToken()
+                    .then(() => {
+                        done(Error('Error should be thrown'))
+                    })
+                    .catch((err) => {
+                        expect(err.statusCode).to.eq(400);
+                        done();
+                    })
+                    .catch(done);
+            });
+            it('throws an error message', (done) => {
+                getToken()
+                    .then(() => {
+                        done(Error('Error should be thrown'))
+                    })
+                    .catch((err) => {
+                        expect(err.message).to.eq(TOKEN_ERROR);
+                        done();
+                    })
+                    .catch(done);
+            });
+        });
+    });
+
+    describe('findPlaylist', () =>{
+        context('with a valid playlist uri', () => {
+            it.skip('resolve with playlist info', (done) => {
+                done()
+            });
+        });
+
+        context('with an invalid playlist uri', () => {
+            it.skip('throws a 404', (done) =>{
+                done();
+            });
+            it.skip('throws an error message', (done) =>{
+                done();
+            });
         });
     });
 

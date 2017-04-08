@@ -1,6 +1,8 @@
 
 const request = require('request-promise-native');
 
+const TOKEN_ERROR = 'Error getting Spotify Token';
+
 const API_BASE = 'https://api.spotify.com/';
 const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
 const TRACK_ENDPOINT = trackId => `${API_BASE}v1/tracks/${trackId}`;
@@ -59,12 +61,11 @@ function getToken() {
         .then(resp =>
             JSON.parse(resp).access_token
         )
-        .catch(err =>
-            Promise.reject({
-                statusCode: err.statusCode || 500,
-                message: 'Error getting Spotify Token'
-            })
-        );
+        .catch(({ statusCode=500 }) => {
+            const err = new Error(TOKEN_ERROR);
+            err.statusCode = statusCode;
+            throw err;
+        });
 }
 
 function findPlaylist(playlist) {
@@ -124,5 +125,6 @@ module.exports = {
     findTrack,
     findPlaylist,
     parsePlaylist,
-    extractID
+    extractID,
+    TOKEN_ERROR
 };

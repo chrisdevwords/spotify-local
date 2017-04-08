@@ -81,10 +81,10 @@ function findPlaylist(playlist) {
                 }
             })
         )
-        .then(({ href, name }) =>
+        .then(({ uri, name }) =>
             ({
                 title: name,
-                href
+                uri
             })
         );
 }

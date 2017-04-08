@@ -20,9 +20,9 @@ router.post('/', (req, res, next) => {
 
     spotifyApi
         .findPlaylist(req.body.playlist)
-        .then(({ name, uri }) => {
+        .then(({ title, uri }) => {
             spotifyLocal
-                .setPlaylist({ name, uri })
+                .setPlaylist({ title, uri })
                 .then((resp) => {
                     res.json(resp);
                 })

@@ -125,7 +125,8 @@ describe('The Spotify API Helper', () => {
 
         beforeEach((done) => {
             sinon
-                .stub(request, 'get', openTrackMock);
+                .stub(request, 'get')
+                .callsFake(openTrackMock);
             done();
 
         });

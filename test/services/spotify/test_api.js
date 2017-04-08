@@ -14,15 +14,18 @@ const {
 
 const openTrackMock = (options) => {
     const id = options.uri.split('/').pop();
-    const ROOT = '../../../';
     return openMock(
-        PATH.resolve(__dirname, ROOT, `test/mock/spotify/tracks/${id}.json`)
+        `spotify/tracks/${id}`
     );
 };
 
 const openMock = (filePath) => {
+
+    const ROOT = '../../../';
+    const file = PATH.resolve(__dirname, ROOT, `test/mock/${filePath}.json`)
+
     return new Promise((resolve, reject) => {
-        fs.readFile(filePath, (error, data) => {
+        fs.readFile(file, (error, data) => {
             if(error) {
                 reject(error);
             } else {

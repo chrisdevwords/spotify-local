@@ -43,6 +43,16 @@ function parsePlaylist(val) {
     }
 }
 
+function processRequestError(req) {
+    if (req instanceof Error) {
+        throw req;
+    }
+    const { statusCode=500, error, name } = req;
+    const err = new Error(error.error.message);
+    err.statusCode = statusCode || 500;
+    throw err;
+}
+
 function getToken() {
 
     const { SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env;
@@ -82,6 +92,7 @@ function findPlaylist(playlist) {
                 }
             })
         )
+        .catch(processRequestError)
         .then(({ uri, name }) =>
             ({
                 title: name,
@@ -100,6 +111,7 @@ function findTrack(track) {
             uri: TRACK_ENDPOINT(id),
             json: true
         })
+        .catch(processRequestError)
         .then(({ artists, name, uri, available_markets }) => {
 
             if (!available_markets.includes('US')) {

@@ -1,4 +1,3 @@
-
 const PATH = require('path');
 const fs = require('fs');
 const sinon = require('sinon');
@@ -27,7 +26,9 @@ const openMock = (filePath) => {
                 const json = JSON.parse(data.toString());
                 if (json.error) {
                     reject({
-                        message: json.error.message,
+                        error: {
+                            error: json.error
+                        },
                         statusCode : json.error.status
                     });
                 } else {

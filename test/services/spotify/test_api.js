@@ -52,7 +52,7 @@ const openPlaylistMock = (options) => {
     return openMock(
         `spotify/playlists/${id}`
     );
-}
+};
 
 const openTokenMock = (options) =>
     openMock('spotify/token/success')
@@ -132,7 +132,6 @@ describe('The Spotify API Helper', () => {
                 const { userId } = parsePlaylist(playlist);
                 expect(userId).to.eq(undefined);
             });
-
         });
     });
 
@@ -162,7 +161,6 @@ describe('The Spotify API Helper', () => {
         });
 
         context('with missing spotify api creds', () => {
-
             beforeEach((done) => {
                 sinon
                     .stub(request, 'post')
@@ -374,17 +372,46 @@ describe('The Spotify API Helper', () => {
                     })
                     .catch(done);
             });
+
+            it('throws an invalid id message', (done) => {
+                findTrack('foo')
+                    .then(() => {
+                        done(Error('Error should be thrown.'))
+                    })
+                    .catch(({ message }) => {
+                        expect(message)
+                            .to.eq('invalid id');
+                        done();
+                    })
+                    .catch(done);
+            });
         });
 
         context('with a valid but non-existent track id', () => {
+
+            const trackId = 'xxxxxxxxxxxxxxxxxxxxxx';
+
             it('throws a 404', (done) => {
-                findTrack('xxxxxxxxxxxxxxxxxxxxxx')
+                findTrack(trackId)
                     .then(() => {
                         done(Error('Error should be thrown.'))
                     })
                     .catch(({ statusCode }) => {
                         expect(statusCode)
                             .to.eq(404);
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('throws an track not found message', (done) => {
+                findTrack(trackId)
+                    .then(() => {
+                        done(Error('Error should be thrown.'))
+                    })
+                    .catch(({ message }) => {
+                        expect(message)
+                            .to.eq('non existing id');
                         done();
                     })
                     .catch(done);

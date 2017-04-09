@@ -14,13 +14,6 @@ const {
 } = require('../../../app/services/spotify/api');
 
 
-const openTrackMock = (options) => {
-    const id = options.uri.split('/').pop();
-    return openMock(
-        `spotify/tracks/${id}`
-    );
-};
-
 const openMock = (filePath) => {
 
     const ROOT = '../../../';
@@ -44,6 +37,24 @@ const openMock = (filePath) => {
         });
     });
 };
+
+const openTrackMock = (options) => {
+    const id = options.uri.split('/').pop();
+    return openMock(
+        `spotify/tracks/${id}`
+    );
+};
+
+const openPlaylistMock = (options) => {
+    const id = options.uri.split('/').pop();
+    return openMock(
+        `spotify/playlists/${id}`
+    );
+}
+
+const openTokenMock = (options) =>
+    openMock('spotify/token/success')
+        .then(JSON.stringify);
 
 describe('The Spotify API Helper', () => {
 
@@ -124,14 +135,12 @@ describe('The Spotify API Helper', () => {
     });
 
     describe('getToken', () => {
+
         context('with a valid auth token', () => {
             beforeEach((done) => {
                 sinon
                     .stub(request, 'post')
-                    .callsFake(() =>
-                        openMock('spotify/token/success')
-                            .then(JSON.stringify)
-                    );
+                    .callsFake(openTokenMock);
                 done();
             });
 

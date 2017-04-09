@@ -8,6 +8,7 @@ const {
     getToken,
     extractID,
     findTrack,
+    findPlaylist,
     parsePlaylist,
     TOKEN_ERROR,
 } = require('../../../app/services/spotify/api');
@@ -200,20 +201,107 @@ describe('The Spotify API Helper', () => {
     });
 
     describe('findPlaylist', () =>{
-        context('with a valid playlist uri', () => {
-            it.skip('resolve with playlist info', (done) => {
-                done()
+
+        context('with valid api creds', () => {
+            beforeEach((done) => {
+                sinon.stub(request, 'post')
+                    .callsFake(openTokenMock);
+                sinon.stub(request, 'get')
+                    .callsFake(openPlaylistMock);
+                done();
+            });
+
+            afterEach((done) =>{
+                request.post.restore();
+                request.get.restore();
+                done();
+            });
+
+            context('with a valid playlist uri', () => {
+
+                const pl = 'spotify:user:spotify:playlist:37i9dQZF1DX0XUsuxWHRQd';
+
+                it('resolve with playlist info', (done) => {
+                    findPlaylist(pl)
+                        .then(({ title, uri }) => {
+                            expect(title).to.eq('RapCaviar');
+                            done();
+                        })
+                        .catch(done);
+                });
+            });
+
+            context('with an invalid playlist uri', () => {
+
+                const pl = 'spotify:user:spotify:playlist:foo';
+
+                it('throws a 404', (done) => {
+                    findPlaylist(pl)
+                        .then(() => {
+                            done(Error('This should throw an error.'))
+                        })
+                        .catch((err) => {
+                            expect(err.statusCode).to.eq(404);
+                            done();
+                        })
+                        .catch(done);
+                });
+
+                it('throws an error message', (done) => {
+                    findPlaylist(pl)
+                        .then(() => {
+                            done(Error('This should throw an error.'))
+                        })
+                        .catch((err) => {
+                            expect(err.message).to.eq('Invalid playlist Id');
+                            done();
+                        })
+                        .catch(done);
+                });
             });
         });
 
-        context('with an invalid playlist uri', () => {
-            it.skip('throws a 404', (done) =>{
+        context('with missing API Creds', () => {
+
+            beforeEach((done) => {
+                sinon
+                    .stub(request, 'post')
+                    .rejects({ statusCode: 400});
+                done();
+
+            });
+
+            afterEach((done) => {
+                request.post.restore();
                 done();
             });
-            it.skip('throws an error message', (done) =>{
-                done();
+
+            const pl = 'spotify:user:spotify:playlist:37i9dQZF1DX0XUsuxWHRQd';
+
+            it('throws a 400', (done) => {
+                findPlaylist(pl)
+                    .then(() => {
+                        done(Error('Error should be thrown'))
+                    })
+                    .catch((err) => {
+                        expect(err.statusCode).to.eq(400);
+                        done();
+                    })
+                    .catch(done);
             });
-        });
+
+            it('throws an error message', (done) => {
+                findPlaylist(pl)
+                    .then(() => {
+                        done(Error('Error should be thrown'))
+                    })
+                    .catch((err) => {
+                        expect(err.message).to.eq(TOKEN_ERROR);
+                        done();
+                    })
+                    .catch(done);
+            });
+        })
     });
 
     describe('findTrack', () => {

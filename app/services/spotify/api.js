@@ -44,7 +44,10 @@ function parsePlaylist(val) {
 }
 
 function processRequestError(req) {
-    if (req instanceof Error) {
+    if (req instanceof Error && req.name !== 'StatusCodeError') {
+        console.log('Error Processing Request');
+        console.log(req.stack);
+        console.log('---');
         throw req;
     }
     const { statusCode=500, error, name } = req;
@@ -79,7 +82,6 @@ function getToken() {
 }
 
 function findPlaylist(playlist) {
-
     const { userId, playlistId } = parsePlaylist(playlist);
     return getToken()
         .then(token =>

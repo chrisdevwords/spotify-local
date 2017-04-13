@@ -15,11 +15,11 @@ const SCRIPT_PLAY = track =>
     `tell application "Spotify" to play track "${track}"`;
 const SCRIPT_PLAYLIST = pl =>
     `tell application "Spotify" to play track "${pl}"`;
-const URI_PLAYLIST = id => `spotify:user:spotify_uk_:playlist:${id}`;
+const URI_PLAYLIST = id => `spotify:user:spotify:playlist:${id}`;
 
 const _defaultPlaylist = {
     // eslint-disable-next-line babel/new-cap
-    uri: URI_PLAYLIST('2HSnhAB2ugTyXcWteTOOKy'),
+    uri: URI_PLAYLIST('37i9dQZF1DX0XUsuxWHRQd'),
     title: 'Default Playlist'
 };
 

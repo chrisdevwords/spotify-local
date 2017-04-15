@@ -37,7 +37,8 @@ let _timer;
 
 function getShuffle() {
     return appleScript
-        .execFile(SCRIPT_IS_SHUFFLING);
+        .execFile(SCRIPT_IS_SHUFFLING)
+        .then(answer => answer === 'true');
 }
 
 function toggleShuffle() {

@@ -5,6 +5,8 @@ const dotenv = require('dotenv');
 const queue = require('./routes/api/spotify/queue');
 const playing = require('./routes/api/spotify/playing');
 const playlist = require('./routes/api/spotify/playlist');
+const shuffle = require('./routes/api/spotify/shuffle');
+
 const middleware = require('./middleware');
 const errorManager = require('./middleware/error-manager');
 const spotifyLocal = require('./services/spotify/local');
@@ -30,6 +32,7 @@ app.get('/', (req, res) => {
 app.use('/api/spotify/queue', queue);
 app.use('/api/spotify/playlist', playlist);
 app.use('/api/spotify/playing', playing);
+app.use('/api/spotify/shuffle', shuffle);
 
 errorManager.configure(app);
 

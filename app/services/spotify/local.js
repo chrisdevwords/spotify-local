@@ -35,13 +35,13 @@ let _playlist = _defaultPlaylist;
 let _currentTrack;
 let _timer;
 
-function getShuffling() {
+function getShuffle() {
     return appleScript
         .execFile(SCRIPT_IS_SHUFFLING);
 }
 
-function toggleShuffling() {
-    return getShuffling()
+function toggleShuffle() {
+    return getShuffle()
         .then((shuffling) => {
             let SCRIPT;
             if (shuffling) {
@@ -203,6 +203,6 @@ module.exports = {
     nowPlaying,
     getQueue: () => Promise.resolve(_queue),
     currentTrack: () => Promise.resolve(_currentTrack),
-    getShuffling,
-    toggleShuffling
+    getShuffle,
+    toggleShuffle
 };

@@ -6,8 +6,8 @@ const ROOT = '../../../';
 const SCRIPT_NOW_PLAYING = PATH.resolve(
     __dirname, ROOT, 'apple-script/currentsong.scpt'
 );
-const SCRIPT_TOGGLE_SHUFFLE = PATH.resolve(
-    __dirname, ROOT, 'apple-script/toggle-shuffle.scpt'
+const SCRIPT_IS_SHUFFLING = PATH.resolve(
+    __dirname, ROOT, 'apple-script/get-shuffling.scpt'
 );
 const SCRIPT_STATUS = 'tell application "Spotify" to return player state';
 const SCRIPT_PAUSE = 'tell application "Spotify" to pause';
@@ -35,6 +35,25 @@ let _playlist = _defaultPlaylist;
 let _currentTrack;
 let _timer;
 
+function getShuffling() {
+    return appleScript
+        .execFile(SCRIPT_IS_SHUFFLING);
+}
+
+function toggleShuffling() {
+    return getShuffling()
+        .then((shuffling) => {
+            let SCRIPT;
+            if (shuffling) {
+                SCRIPT = SCRIPT_SHUFFLE_OFF;
+            } else {
+                SCRIPT =  SCRIPT_SHUFFLE_ON;
+            }
+            return appleScript
+                .execString(SCRIPT)
+                .then(() => !shuffling)
+        })
+}
 
 function setPlaylist(playlist) {
     return appleScript
@@ -183,5 +202,7 @@ module.exports = {
     start,
     nowPlaying,
     getQueue: () => Promise.resolve(_queue),
-    currentTrack: () => Promise.resolve(_currentTrack)
+    currentTrack: () => Promise.resolve(_currentTrack),
+    getShuffling,
+    toggleShuffling
 };

@@ -7,9 +7,14 @@ const ROOT = '../../../';
 const SCRIPT_NOW_PLAYING = PATH.resolve(
     __dirname, ROOT, 'apple-script/currentsong.scpt'
 );
+const SCRIPT_TOGGLE_SHUFFLE = PATH.resolve(
+    __dirname, ROOT, 'apple-script/toggle-shuffle.scpt'
+);
 const SCRIPT_STATUS = 'tell application "Spotify" to return player state';
 const SCRIPT_PAUSE = 'tell application "Spotify" to pause';
 const SCRIPT_RESUME = 'tell application "Spotify" to play';
+const SCRIPT_SHUFFLE_ON = 'tell application "Spotify" to set shuffling to true';
+const SCRIPT_SHUFFLE_OFF = 'tell application "Spotify" to set shuffling to false';
 const SCRIPT_NEXT = 'tell application "Spotify" to play next track';
 const SCRIPT_PLAY = track =>
     `tell application "Spotify" to play track "${track}"`;

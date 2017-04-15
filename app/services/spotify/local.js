@@ -106,14 +106,14 @@ function playTrack(track) {
 
 function shufflePlaylist(playlist) {
     return appleScript
-        // eslint-disable-next-line babel/new-cap
+    // eslint-disable-next-line babel/new-cap
         .execString(SCRIPT_PLAYLIST(playlist.uri))
-        // todo add command to shuffle
-       .then(() => {
-           _playlist = playlist;
-           // eslint-disable-next-line no-use-before-define
-           return checkCurrentTrack();
-       });
+        .execString(SCRIPT_SHUFFLE_ON)
+        .then(() => {
+            _playlist = playlist;
+            // eslint-disable-next-line no-use-before-define
+            return checkCurrentTrack();
+        });
 }
 
 function checkCurrentTrack() {

@@ -45,12 +45,14 @@ function parsePlaylist(val) {
 
 function processRequestError(req) {
     if (req instanceof Error && req.name !== 'StatusCodeError') {
+        /* eslint-disable no-console */
         console.log('Error Processing Request');
         console.log(req.stack);
         console.log('---');
+        /* eslint-enable no-console */
         throw req;
     }
-    const { statusCode=500, error, name } = req;
+    const { statusCode = 500, error } = req;
     const err = new Error(error.error.message);
     err.statusCode = statusCode || 500;
     throw err;
@@ -74,7 +76,7 @@ function getToken() {
         .then(resp =>
             JSON.parse(resp).access_token
         )
-        .catch(({ statusCode=500 }) => {
+        .catch(({ statusCode = 500 }) => {
             const err = new Error(TOKEN_ERROR);
             err.statusCode = statusCode;
             throw err;

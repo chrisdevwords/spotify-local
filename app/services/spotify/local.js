@@ -12,8 +12,10 @@ const SCRIPT_TOGGLE_SHUFFLE = PATH.resolve(
 const SCRIPT_STATUS = 'tell application "Spotify" to return player state';
 const SCRIPT_PAUSE = 'tell application "Spotify" to pause';
 const SCRIPT_RESUME = 'tell application "Spotify" to play';
-const SCRIPT_SHUFFLE_ON = 'tell application "Spotify" to set shuffling to true';
-const SCRIPT_SHUFFLE_OFF = 'tell application "Spotify" to set shuffling to false';
+const SCRIPT_SHUFFLE_ON =
+    'tell application "Spotify" to set shuffling to true';
+const SCRIPT_SHUFFLE_OFF =
+    'tell application "Spotify" to set shuffling to false';
 const SCRIPT_NEXT = 'tell application "Spotify" to play next track';
 const SCRIPT_PLAY = track =>
     `tell application "Spotify" to play track "${track}"`;
@@ -35,8 +37,8 @@ let _timer;
 
 
 function setPlaylist(playlist) {
-    // eslint-disable-next-line babel/new-cap
     return appleScript
+        // eslint-disable-next-line babel/new-cap
         .execString(SCRIPT_PLAYLIST(playlist.uri))
         .then(() => {
             _playlist = playlist;
@@ -74,8 +76,8 @@ function nowPlaying() {
 }
 
 function playTrack(track) {
-    // eslint-disable-next-line babel/new-cap
     return appleScript
+        // eslint-disable-next-line babel/new-cap
         .execString(SCRIPT_PLAY(track.uri))
         .then(() => {
             _currentTrack = track;
@@ -84,8 +86,8 @@ function playTrack(track) {
 }
 
 function shufflePlaylist(playlist) {
-    // eslint-disable-next-line babel/new-cap
     return appleScript
+        // eslint-disable-next-line babel/new-cap
         .execString(SCRIPT_PLAYLIST(playlist.uri))
         // todo add command to shuffle
        .then(() => {

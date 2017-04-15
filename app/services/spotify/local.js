@@ -1,7 +1,6 @@
 
 const PATH = require('path');
-const applescript = require('applescript');
-
+const appleScript = require('../../lib/apple-script')
 
 const ROOT = '../../../';
 const SCRIPT_NOW_PLAYING = PATH.resolve(
@@ -29,47 +28,16 @@ const _defaultPlaylist = {
 };
 
 const _queue = [];
+
 let _playlist = _defaultPlaylist;
 let _currentTrack;
 let _timer;
 
-function execString(script) {
-    return new Promise((resolve, reject) => {
-        const cb = (err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        };
-        try {
-            applescript.execString(script, cb);
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
-
-function execFile(file) {
-    return new Promise((resolve, reject) => {
-        const cb =  (err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        };
-        try {
-            applescript.execFile(file, cb);
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
 
 function setPlaylist(playlist) {
     // eslint-disable-next-line babel/new-cap
-    return execString(SCRIPT_PLAYLIST(playlist.uri))
+    return appleScript
+        .execString(SCRIPT_PLAYLIST(playlist.uri))
         .then(() => {
             _playlist = playlist;
             return {
@@ -93,7 +61,8 @@ function getPlaylist() {
 }
 
 function nowPlaying() {
-    return execFile(SCRIPT_NOW_PLAYING)
+    return appleScript
+        .execFile(SCRIPT_NOW_PLAYING)
         .then((data) => {
             const [uri, name, artist] = data.split('::');
             return {
@@ -106,7 +75,8 @@ function nowPlaying() {
 
 function playTrack(track) {
     // eslint-disable-next-line babel/new-cap
-    return execString(SCRIPT_PLAY(track.uri))
+    return appleScript
+        .execString(SCRIPT_PLAY(track.uri))
         .then(() => {
             _currentTrack = track;
             return track;
@@ -115,7 +85,8 @@ function playTrack(track) {
 
 function shufflePlaylist(playlist) {
     // eslint-disable-next-line babel/new-cap
-    return execString(SCRIPT_PLAYLIST(playlist.uri))
+    return appleScript
+        .execString(SCRIPT_PLAYLIST(playlist.uri))
         // todo add command to shuffle
        .then(() => {
            _playlist = playlist;
@@ -164,7 +135,8 @@ function nextTrack() {
                 currentTrack
             }));
     }
-    return execString(SCRIPT_NEXT)
+    return appleScript
+        .execString(SCRIPT_NEXT)
         .then(checkCurrentTrack)
         .then((currentTrack) => {
             if (currentTrack.uri === skippedTrack.uri) {

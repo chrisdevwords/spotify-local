@@ -36,19 +36,17 @@ router.post('/album', (req, res, next) => {
     spotifyApi
         .findAlbum(album)
         .then((result) => {
-            //queue Album Method, resolves with position of first track
-            Promise.all(
-                result.tracks.map(
-                    track => spotifyLocal.queueTrack(
-                        Object.assign(track, { requestedBy })
-                    ))
-            ).then((slots) => {
-                const { position } = slots[0];
-                res.json({
-                    album: Object.assign(result, { requestedBy }),
-                    position
-                });
-            });
+            const tracks = result.tracks.map(
+                track => Object.assign(track, { requestedBy })
+            );
+            return Object.assign(
+                result,
+                { tracks }
+            );
+        })
+        .then(spotifyLocal.queueAlbum)
+        .then((resp) => {
+            res.json(resp);
         })
         .catch(next);
 });

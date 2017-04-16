@@ -180,6 +180,16 @@ function queueTrack(track) {
     });
 }
 
+function queueAlbum(album) {
+    const position = _queue.length + 1;
+    const { tracks } = album;
+    tracks.forEach(track => _queue.push(track));
+    return Promise.resolve({
+        position,
+        album
+    });
+}
+
 function start() {
     clearTimeout(_timer);
     _timer = setTimeout(() => {
@@ -197,6 +207,7 @@ function start() {
 module.exports = {
     nextTrack,
     queueTrack,
+    queueAlbum,
     playTrack,
     setPlaylist,
     getPlaylist,

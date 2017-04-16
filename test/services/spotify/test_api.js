@@ -87,6 +87,15 @@ describe('The Spotify API Helper', () => {
                 done();
             });
         });
+
+        context('with a uri for a Spotify Album', () => {
+            it('extracts the id', (done) =>{
+                const link = 'spotify:album:51XjnQQ9SR8VSEpxPO9vrW';
+                expect(extractID(link))
+                    .to.eq('51XjnQQ9SR8VSEpxPO9vrW');
+                done();
+            });
+        });
     });
 
     describe('parsePlaylist', () => {

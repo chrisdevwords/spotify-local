@@ -136,11 +136,6 @@ describe('The Spotify API Helper', () => {
                 const { playlistId } = parsePlaylist(playlist);
                 expect(playlistId).to.eq(undefined);
             });
-
-            it('returns an undefined userId', () => {
-                const { userId } = parsePlaylist(playlist);
-                expect(userId).to.eq(undefined);
-            });
         });
     });
 

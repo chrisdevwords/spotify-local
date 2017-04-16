@@ -6,6 +6,7 @@ const TOKEN_ERROR = 'Error getting Spotify Token';
 const API_BASE = 'https://api.spotify.com/';
 const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
 const TRACK_ENDPOINT = trackId => `${API_BASE}v1/tracks/${trackId}`;
+const ALBUM_ENDPOINT = id => `${API_BASE}v1/albums/${id}`;
 const PLAYLIST_ENDPOINT = (userId, playlistId) =>
     `${API_BASE}v1/users/${userId}/playlists/${playlistId}`;
 
@@ -136,10 +137,50 @@ function findTrack(track) {
         });
 }
 
+function findAlbum(link) {
+    const id = extractID(link);
+    return request
+        .get({
+            // eslint-disable-next-line babel/new-cap
+            uri: ALBUM_ENDPOINT(id),
+            json: true
+        })
+        .catch(processRequestError)
+        .then(({ tracks, name, artists }) => {
+
+            const albumArtist = artists
+                .map(a => a.name)
+                .join(', ');
+
+            const parsedTracks = tracks.items
+                .filter(track =>
+                    track.available_markets.includes('US')
+                )
+                .map((track) => {
+                    const artist = track.artists
+                        .map(a => a.name)
+                        .join(', ');
+
+                    return {
+                        uri: track.uri,
+                        name: track.name,
+                        artist
+                    };
+                });
+
+            return {
+                name,
+                artist: albumArtist,
+                tracks: parsedTracks
+            }
+        });
+}
+
 module.exports = {
     getToken,
     findTrack,
     findPlaylist,
+    findAlbum,
     parsePlaylist,
     extractID,
     TOKEN_ERROR

@@ -109,7 +109,7 @@ function shufflePlaylist(playlist) {
     return appleScript
     // eslint-disable-next-line babel/new-cap
         .execString(SCRIPT_PLAYLIST(playlist.uri))
-        .execString(SCRIPT_SHUFFLE_ON)
+        .then(()=>appleScript.execString(SCRIPT_SHUFFLE_ON))
         .then(() => {
             _playlist = playlist;
             // eslint-disable-next-line no-use-before-define

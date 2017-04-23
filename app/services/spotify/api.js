@@ -89,7 +89,6 @@ function findPlaylist(playlist) {
     return getToken()
         .then(token =>
             request.get({
-                // eslint-disable-next-line babel/new-cap
                 uri: PLAYLIST_ENDPOINT(userId, playlistId),
                 json: true,
                 headers: {
@@ -112,7 +111,6 @@ function findTrack(track) {
 
     return request
         .get({
-            // eslint-disable-next-line babel/new-cap
             uri: TRACK_ENDPOINT(id),
             json: true
         })
@@ -141,7 +139,6 @@ function findAlbum(link) {
     const id = extractID(link);
     return request
         .get({
-            // eslint-disable-next-line babel/new-cap
             uri: ALBUM_ENDPOINT(id),
             json: true
         })

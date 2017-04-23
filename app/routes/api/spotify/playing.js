@@ -3,7 +3,6 @@ const express = require('express');
 const spotifyLocal = require('../../../services/spotify/local');
 const spotifyApi = require('../../../services/spotify/api');
 
-// eslint-disable-next-line babel/new-cap
 const router = express.Router();
 
 router.get('/', (req, res, next) => {

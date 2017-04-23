@@ -24,7 +24,6 @@ const SCRIPT_PLAYLIST = pl =>
 const URI_PLAYLIST = id => `spotify:user:spotify:playlist:${id}`;
 
 const _defaultPlaylist = {
-    // eslint-disable-next-line babel/new-cap
     uri: URI_PLAYLIST('37i9dQZF1DX0XUsuxWHRQd'),
     title: 'Default Playlist'
 };
@@ -58,7 +57,6 @@ function toggleShuffle() {
 
 function setPlaylist(playlist) {
     return appleScript
-        // eslint-disable-next-line babel/new-cap
         .execString(SCRIPT_PLAYLIST(playlist.uri))
         .then(() => {
             _playlist = playlist;
@@ -97,7 +95,6 @@ function nowPlaying() {
 
 function playTrack(track) {
     return appleScript
-        // eslint-disable-next-line babel/new-cap
         .execString(SCRIPT_PLAY(track.uri))
         .then(() => {
             _currentTrack = track;
@@ -107,7 +104,6 @@ function playTrack(track) {
 
 function shufflePlaylist(playlist) {
     return appleScript
-    // eslint-disable-next-line babel/new-cap
         .execString(SCRIPT_PLAYLIST(playlist.uri))
         .then(() => appleScript.execString(SCRIPT_SHUFFLE_ON))
         .then(() => {

@@ -227,6 +227,10 @@ function queueAlbum(album) {
 function start() {
     clearTimeout(_timer);
     _timer = setTimeout(() => {
+        if (_paused) {
+            start();
+            return false;
+        }
         checkCurrentTrack()
             .then((/*currentTrack*/) => {
                 start();
@@ -239,6 +243,9 @@ function start() {
 }
 
 module.exports = {
+    pause,
+    resume,
+    getPaused,
     nextTrack,
     queueTrack,
     queueAlbum,

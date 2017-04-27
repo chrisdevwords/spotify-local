@@ -132,6 +132,12 @@ function resume() {
 
 
 function playTrack(track) {
+
+    if (_paused) {
+        return resume()
+            .then(() => playTrack(track))
+    }
+
     return appleScript
         .execString(SCRIPT_PLAY(track.uri))
         .then(() => {

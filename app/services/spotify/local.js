@@ -185,7 +185,7 @@ function nextTrack() {
 
     if (_queue.length) {
         return playTrack(_queue.shift())
-            .then(checkCurrentTrack)
+            .then(() => delayCall(checkCurrentTrack, 500))
             .then(currentTrack => ({
                 skippedTrack,
                 currentTrack
@@ -193,7 +193,7 @@ function nextTrack() {
     }
     return appleScript
         .execString(SCRIPT_NEXT)
-        .then(checkCurrentTrack)
+        .then(() => delayCall(checkCurrentTrack, 500))
         .then((currentTrack) => {
             if (currentTrack.uri === skippedTrack.uri) {
                 return shufflePlaylist(_playlist);

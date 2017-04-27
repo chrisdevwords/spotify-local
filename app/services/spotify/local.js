@@ -33,6 +33,21 @@ const _queue = [];
 let _playlist = _defaultPlaylist;
 let _currentTrack;
 let _timer;
+let _paused = false;
+
+function delayCall(f, delay) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            f().then(resolve).catch(reject);
+        }, delay)
+    });
+}
+
+function getPaused() {
+    return Promise.resolve({
+        paused: _paused
+    });
+}
 
 function getShuffle() {
     return appleScript

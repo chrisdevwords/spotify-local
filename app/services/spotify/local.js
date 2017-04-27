@@ -239,7 +239,8 @@ function start() {
                 // eslint-disable-next-line no-console
                 console.log('Playback error:', err);
             });
-    }, 250);
+        return true;
+    }, 300);
 }
 
 module.exports = {

@@ -70,31 +70,6 @@ function toggleShuffle() {
         })
 }
 
-function setPlaylist(playlist) {
-    return appleScript
-        .execString(SCRIPT_PLAYLIST(playlist.uri))
-        .then(() => {
-            _playlist = playlist;
-            return {
-                message: 'Default playlist changed.',
-                playlist
-            }
-        })
-        .catch(err =>
-            Promise.reject({
-                statusCode: err.statusCode || 500,
-                message: 'Local error setting playlist.',
-                playlist
-            })
-        );
-}
-
-function getPlaylist() {
-    return Promise.resolve({
-        playlist: _playlist
-    });
-}
-
 function nowPlaying() {
     return appleScript
         .execFile(SCRIPT_NOW_PLAYING)
@@ -130,6 +105,37 @@ function resume() {
         })
 }
 
+
+function setPlaylist(playlist) {
+
+    if (_paused) {
+        return resume()
+            .then(() => setPlaylist(playlist))
+    }
+
+    return appleScript
+        .execString(SCRIPT_PLAYLIST(playlist.uri))
+        .then(() => {
+            _playlist = playlist;
+            return {
+                message: 'Default playlist changed.',
+                playlist
+            }
+        })
+        .catch(err =>
+            Promise.reject({
+                statusCode: err.statusCode || 500,
+                message: 'Local error setting playlist.',
+                playlist
+            })
+        );
+}
+
+function getPlaylist() {
+    return Promise.resolve({
+        playlist: _playlist
+    });
+}
 
 function playTrack(track) {
 

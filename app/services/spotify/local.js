@@ -108,6 +108,29 @@ function nowPlaying() {
         });
 }
 
+
+function pause() {
+    _paused = true;
+    return appleScript
+        .execString(SCRIPT_PAUSE)
+        .then(() => ({
+            paused: _paused
+        }));
+}
+
+function resume() {
+    return appleScript
+        .execString(SCRIPT_RESUME)
+        .then(() => delayCall(nowPlaying, 500))
+        .then(() => {
+            _paused = false;
+            return {
+                paused: _paused
+            };
+        })
+}
+
+
 function playTrack(track) {
     return appleScript
         .execString(SCRIPT_PLAY(track.uri))

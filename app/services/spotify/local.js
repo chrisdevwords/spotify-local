@@ -181,8 +181,12 @@ function checkCurrentTrack() {
 
 function nextTrack() {
 
-    const skippedTrack = _currentTrack;
 
+    if (_paused) {
+        return resume().then(nextTrack)
+    }
+
+    const skippedTrack = _currentTrack;
     if (_queue.length) {
         return playTrack(_queue.shift())
             .then(() => delayCall(checkCurrentTrack, 500))

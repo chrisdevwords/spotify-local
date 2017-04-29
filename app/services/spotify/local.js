@@ -33,6 +33,21 @@ const _queue = [];
 let _playlist = _defaultPlaylist;
 let _currentTrack;
 let _timer;
+let _paused = false;
+
+function delayCall(f, delay) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            f().then(resolve).catch(reject);
+        }, delay)
+    });
+}
+
+function getPaused() {
+    return Promise.resolve({
+        paused: _paused
+    });
+}
 
 function getShuffle() {
     return appleScript
@@ -55,7 +70,49 @@ function toggleShuffle() {
         })
 }
 
+function nowPlaying() {
+    return appleScript
+        .execFile(SCRIPT_NOW_PLAYING)
+        .then((data) => {
+            const [uri, name, artist] = data.split('::');
+            return {
+                uri,
+                name,
+                artist
+            };
+        });
+}
+
+
+function pause() {
+    _paused = true;
+    return appleScript
+        .execString(SCRIPT_PAUSE)
+        .then(() => ({
+            paused: _paused
+        }));
+}
+
+function resume() {
+    return appleScript
+        .execString(SCRIPT_RESUME)
+        .then(() => delayCall(nowPlaying, 500))
+        .then(() => {
+            _paused = false;
+            return {
+                paused: _paused
+            };
+        })
+}
+
+
 function setPlaylist(playlist) {
+
+    if (_paused) {
+        return resume()
+            .then(() => setPlaylist(playlist))
+    }
+
     return appleScript
         .execString(SCRIPT_PLAYLIST(playlist.uri))
         .then(() => {
@@ -80,20 +137,13 @@ function getPlaylist() {
     });
 }
 
-function nowPlaying() {
-    return appleScript
-        .execFile(SCRIPT_NOW_PLAYING)
-        .then((data) => {
-            const [uri, name, artist] = data.split('::');
-            return {
-                uri,
-                name,
-                artist
-            };
-        });
-}
-
 function playTrack(track) {
+
+    if (_paused) {
+        return resume()
+            .then(() => playTrack(track))
+    }
+
     return appleScript
         .execString(SCRIPT_PLAY(track.uri))
         .then(() => {
@@ -143,11 +193,15 @@ function checkCurrentTrack() {
 
 function nextTrack() {
 
-    const skippedTrack = _currentTrack;
 
+    if (_paused) {
+        return resume().then(nextTrack)
+    }
+
+    const skippedTrack = _currentTrack;
     if (_queue.length) {
         return playTrack(_queue.shift())
-            .then(checkCurrentTrack)
+            .then(() => delayCall(checkCurrentTrack, 500))
             .then(currentTrack => ({
                 skippedTrack,
                 currentTrack
@@ -155,7 +209,7 @@ function nextTrack() {
     }
     return appleScript
         .execString(SCRIPT_NEXT)
-        .then(checkCurrentTrack)
+        .then(() => delayCall(checkCurrentTrack, 500))
         .then((currentTrack) => {
             if (currentTrack.uri === skippedTrack.uri) {
                 return shufflePlaylist(_playlist);
@@ -189,6 +243,10 @@ function queueAlbum(album) {
 function start() {
     clearTimeout(_timer);
     _timer = setTimeout(() => {
+        if (_paused) {
+            start();
+            return false;
+        }
         checkCurrentTrack()
             .then((/*currentTrack*/) => {
                 start();
@@ -197,10 +255,14 @@ function start() {
                 // eslint-disable-next-line no-console
                 console.log('Playback error:', err);
             });
-    }, 250);
+        return true;
+    }, 300);
 }
 
 module.exports = {
+    pause,
+    resume,
+    getPaused,
     nextTrack,
     queueTrack,
     queueAlbum,

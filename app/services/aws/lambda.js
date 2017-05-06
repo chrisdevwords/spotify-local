@@ -1,6 +1,4 @@
-
 const AWS = require('aws-sdk');
-
 
 
 function updateLambdaConfig(lambda, functionName, config) {
@@ -47,7 +45,7 @@ function getLambdaConfig(lambda, functionName) {
 
 }
 
-function updateLambdaTunnel(region, functionName, ngrokTunnel) {
+function updateLambdaTunnel(functionName, ngrokTunnel, region = 'us-east-1') {
 
     const lambda = new AWS.Lambda({ region });
 

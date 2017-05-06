@@ -48,3 +48,15 @@ SPOTIFY_CLIENT_ID=XXXX
 SPOTIFY_SECRET=XXXX
 ```
 For more information on Spotify API Authorization or to obtain your own credentials, see: [The Spotify API Authorization Guide](https://developer.spotify.com/web-api/authorization-guide/).
+
+## ENV Vars for Slack Integration
+If you would like to run the [AWS Lambda Slack Integration](https://github.com/chrisdevwords/slack-spotify-lambda),
+the environment var for the `SPOTIFY_LOCAL_URL` can be updated everytime the server is started by adding the following
+to the .env file:
+```
+AWS_ACCESS_KEY_ID=XXX
+AWS_SECRET_ACCESS_KEY=XXX-XXX
+AWS_REGION=us-east-1
+AWS_FUNCTION_NAME=myFunctionName
+AWS_REGION=us-east-1
+```

@@ -1,6 +1,4 @@
-
 const express = require('express');
-const ngrok = require('ngrok');
 const dotenv = require('dotenv');
 const queue = require('./routes/api/spotify/queue');
 const playing = require('./routes/api/spotify/playing');
@@ -11,7 +9,7 @@ const pause = require('./routes/api/spotify/pause');
 const middleware = require('./middleware');
 const errorManager = require('./middleware/error-manager');
 const spotifyLocal = require('./services/spotify/local');
-const { updateLambdaTunnel } = require('./services/aws/lambda');
+const ngrok = require('./services/ngrok');
 
 const app = express();
 
@@ -19,7 +17,7 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';
-const { AWS_FUNCTION_NAME, AWS_REGION, TUNNEL } = process.env;
+const {AWS_FUNCTION_NAME, AWS_REGION, TUNNEL} = process.env;
 
 middleware.configure(app);
 
@@ -43,19 +41,18 @@ const server = app.listen(PORT, () => {
     /* eslint-disable no-console */
     console.log(`Listening on http://${HOST}:${PORT}`);
     spotifyLocal.start();
+
     if (TUNNEL) {
-        ngrok.connect({ addr: PORT }, (err, url) => {
-            console.log('Publicly accessible at', url);
-            if (AWS_FUNCTION_NAME) {
-                updateLambdaTunnel(AWS_REGION, AWS_FUNCTION_NAME, url)
-                    .then(() => {
-                        console.log('Lambda settings updated.');
-                    })
-                    .catch((error) => {
-                        console.log('Error updating lambda:', error);
-                    })
-            }
-        });
+        ngrok.openTunnel(PORT, AWS_FUNCTION_NAME, AWS_REGION)
+            .then(({ url, lambdaName }) => {
+                console.log('Server Public URL:', url);
+                if (lambdaName) {
+                    console.log('Lambda:', lambdaName, ' config updated.');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
         /* eslint-enable no-console */
     }
 });

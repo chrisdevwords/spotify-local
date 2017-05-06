@@ -2,9 +2,8 @@
 const AWS = require('aws-sdk');
 
 
-const lambda = new AWS.Lambda({ region :'us-east-1' });
 
-function updateLambdaConfig(functionName, config) {
+function updateLambdaConfig(lambda, functionName, config) {
     const params = Object.assign(
         { FunctionName: functionName },
         config
@@ -26,7 +25,7 @@ function updateLambdaConfig(functionName, config) {
     });
 }
 
-function getLambdaConfig(functionName) {
+function getLambdaConfig(lambda, functionName) {
     return new Promise((resolve, reject) => {
         const cb = (err, data) => {
             if (err) {
@@ -48,9 +47,11 @@ function getLambdaConfig(functionName) {
 
 }
 
-function updateLambdaTunnel(functionName, ngrokTunnel) {
+function updateLambdaTunnel(region, functionName, ngrokTunnel) {
 
-    return getLambdaConfig(functionName)
+    const lambda = new AWS.Lambda({ region });
+
+    return getLambdaConfig(lambda, functionName)
         .then(({Environment}) => {
             const {Variables} = Environment;
             const updatedVars = Object.assign(
@@ -58,7 +59,7 @@ function updateLambdaTunnel(functionName, ngrokTunnel) {
                 Variables,
                 { SPOTIFY_LOCAL_URL: ngrokTunnel }
             );
-            return updateLambdaConfig(functionName, {
+            return updateLambdaConfig(lambda, functionName, {
                 Environment: Object.assign(
                     {},
                     Environment,

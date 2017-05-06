@@ -19,7 +19,7 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';
-const { AWS_FUNCTION_NAME, TUNNEL } = process.env;
+const { AWS_FUNCTION_NAME, AWS_REGION, TUNNEL } = process.env;
 
 middleware.configure(app);
 
@@ -47,7 +47,7 @@ const server = app.listen(PORT, () => {
         ngrok.connect({ addr: PORT }, (err, url) => {
             console.log('Publicly accessible at', url);
             if (AWS_FUNCTION_NAME) {
-                updateLambdaTunnel(AWS_FUNCTION_NAME, url)
+                updateLambdaTunnel(AWS_REGION, AWS_FUNCTION_NAME, url)
                     .then(() => {
                         console.log('Lambda settings updated.');
                     })
@@ -57,7 +57,6 @@ const server = app.listen(PORT, () => {
             }
         });
         /* eslint-enable no-console */
-
     }
 });
 

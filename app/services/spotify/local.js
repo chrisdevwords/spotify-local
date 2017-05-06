@@ -21,10 +21,9 @@ const SCRIPT_PLAY = track =>
     `tell application "Spotify" to play track "${track}"`;
 const SCRIPT_PLAYLIST = pl =>
     `tell application "Spotify" to play track "${pl}"`;
-const URI_PLAYLIST = id => `spotify:user:spotify:playlist:${id}`;
 
 const _defaultPlaylist = {
-    uri: URI_PLAYLIST('37i9dQZF1DX0XUsuxWHRQd'),
+    uri: 'spotify:user:spotify:playlist:37i9dQZF1DX0XUsuxWHRQd',
     title: 'Default Playlist'
 };
 

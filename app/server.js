@@ -9,6 +9,7 @@ const pause = require('./routes/api/spotify/pause');
 const middleware = require('./middleware');
 const errorManager = require('./middleware/error-manager');
 const spotifyLocal = require('./services/spotify/local');
+const spotifyApi = require('./services/spotify/api')
 const ngrok = require('./services/ngrok');
 
 const app = express();
@@ -17,7 +18,12 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';
-const {AWS_FUNCTION_NAME, AWS_REGION, TUNNEL} = process.env;
+const {
+    AWS_FUNCTION_NAME,
+    AWS_REGION,
+    TUNNEL,
+    DEFAULT_PLAYLIST
+} = process.env;
 
 middleware.configure(app);
 
@@ -40,7 +46,19 @@ errorManager.configure(app);
 const server = app.listen(PORT, () => {
     /* eslint-disable no-console */
     console.log(`Listening on http://${HOST}:${PORT}`);
-    spotifyLocal.start();
+
+    if (DEFAULT_PLAYLIST) {
+        spotifyApi.findPlaylist(DEFAULT_PLAYLIST)
+            .then(spotifyLocal.setPlaylist)
+            .then(() => {
+                spotifyLocal.start();
+            })
+            .catch((err) => {
+                console.log('Error getting playlist', err);
+            });
+    } else {
+        spotifyLocal.start();
+    }
 
     if (TUNNEL) {
         ngrok.openTunnel(PORT, AWS_FUNCTION_NAME, AWS_REGION)

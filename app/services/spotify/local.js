@@ -116,7 +116,7 @@ function getVolume() {
         .then(volume => ({
             volume,
             message: `Volume is at ${volume}.`
-        }))
+        }));
 }
 
 function setVolume(volume) {

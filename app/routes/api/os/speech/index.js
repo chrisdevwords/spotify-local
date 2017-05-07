@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/', ({ body }, res, next) => {
 
     const { message } = body;
-    speech.say(message)
+    speech.say(message.trim())
         .then((resp) => {
             res.json({
                 message,

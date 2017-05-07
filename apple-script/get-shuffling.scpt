@@ -5,9 +5,7 @@ on run
   end tell
   if num > 0 then
     tell application "Spotify"
-      if player state is playing then
-        set info to shuffling
-      end if
+      set info to shuffling
     end tell
   end if
   return info

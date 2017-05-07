@@ -2,6 +2,8 @@
 const PATH = require('path');
 const appleScript = require('../../lib/apple-script')
 
+
+const INVALID_VOLUME = 'Volume must be a number between 0 and 100.';
 const ROOT = '../../../';
 const SCRIPT_NOW_PLAYING = PATH.resolve(
     __dirname, ROOT, 'apple-script/currentsong.scpt'
@@ -12,6 +14,11 @@ const SCRIPT_IS_SHUFFLING = PATH.resolve(
 const SCRIPT_STATUS = 'tell application "Spotify" to return player state';
 const SCRIPT_PAUSE = 'tell application "Spotify" to pause';
 const SCRIPT_RESUME = 'tell application "Spotify" to play';
+const SCRIPT_SET_VOLUME = vol =>
+    `tell application "Spotify" to set sound volume to ${vol}`;
+const SCRIPT_GET_VOLUME = PATH.resolve(
+    __dirname, ROOT, 'apple-script/get-volume.scpt'
+);
 const SCRIPT_SHUFFLE_ON =
     'tell application "Spotify" to set shuffling to true';
 const SCRIPT_SHUFFLE_OFF =
@@ -82,7 +89,6 @@ function nowPlaying() {
         });
 }
 
-
 function pause() {
     _paused = true;
     return appleScript
@@ -104,6 +110,28 @@ function resume() {
         })
 }
 
+function getVolume() {
+    return appleScript
+        .execFile(SCRIPT_GET_VOLUME)
+        .then(volume => ({
+            volume,
+            message: `Volume is at ${volume}.`
+        }))
+}
+
+function setVolume(volume) {
+    if (isNaN(volume) || volume < 0 || volume > 100) {
+        const error = new Error(INVALID_VOLUME);
+        error.statusCode = 400;
+        return Promise.reject(error);
+    }
+    return appleScript
+        .execString(SCRIPT_SET_VOLUME(volume))
+        .then(() => ({
+            message: `Volume set to ${volume}.`,
+            volume
+        }));
+}
 
 function setPlaylist(playlist) {
 
@@ -262,6 +290,8 @@ module.exports = {
     pause,
     resume,
     getPaused,
+    getVolume,
+    setVolume,
     nextTrack,
     queueTrack,
     queueAlbum,

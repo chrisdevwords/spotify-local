@@ -6,6 +6,7 @@ const playlist = require('./routes/api/spotify/playlist');
 const shuffle = require('./routes/api/spotify/shuffle');
 const pause = require('./routes/api/spotify/pause');
 const volume = require('./routes/api/spotify/volume');
+const speech = require('./routes/api/os/speech');
 
 const middleware = require('./middleware');
 const errorManager = require('./middleware/error-manager');
@@ -42,6 +43,7 @@ app.use('/api/spotify/playing', playing);
 app.use('/api/spotify/shuffle', shuffle);
 app.use('/api/spotify/volume', volume);
 app.use('/api/spotify/pause', pause);
+app.use('/api/os/speech', speech);
 
 errorManager.configure(app);
 

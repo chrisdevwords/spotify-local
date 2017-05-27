@@ -30,6 +30,16 @@ router.post('/', (req, res, next) => {
         .catch(next);
 });
 
+router.delete('/', (req, res, next) => {
+
+    spotifyLocal
+        .clearQueue()
+        .then((tracks) => {
+            res.json({ tracks })
+        })
+        .catch(next);
+});
+
 router.post('/album', (req, res, next) => {
     const { album, requestedBy } = req.body;
     spotifyApi
@@ -46,6 +56,26 @@ router.post('/album', (req, res, next) => {
         .then(spotifyLocal.queueAlbum)
         .then((resp) => {
             res.json(resp);
+        })
+        .catch(next);
+});
+
+router.get('/:index', (req, res, next) => {
+    const { index } = req.params;
+    spotifyLocal
+        .getQueuedTrack(index)
+        .then((track) => {
+            res.json({ track })
+        })
+        .catch(next);
+});
+
+router.delete('/:index', (req, res, next) => {
+    const { index } = req.params;
+    spotifyLocal
+        .deQueueTrack(index)
+        .then((track) => {
+            res.json({ track })
         })
         .catch(next);
 });

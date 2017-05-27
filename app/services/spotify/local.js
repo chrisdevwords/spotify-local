@@ -220,7 +220,6 @@ function checkCurrentTrack() {
 
 function nextTrack() {
 
-
     if (_paused) {
         return resume().then(nextTrack)
     }

@@ -9,7 +9,9 @@ function say(text) {
     let currentVol;
 
     if (_speaking) {
-        const error = new Error('Someone else is talking. Wait your turn.')
+        const error = new Error(
+            'Someone else is talking. Wait your turn.'
+        );
         error.statusCode = 429;
         throw error;
     }

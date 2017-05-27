@@ -256,9 +256,36 @@ function queueTrack(track) {
     });
 }
 
-function deQueue(index) {
-    const tracks = _queue.splice(index, index + 1);
-    if (tracks.length) {
+function getQueuedTrack(index) {
+
+    if (isNaN(index)) {
+        return Promise.reject({
+            message: 'Index must be a number.',
+            statusCode: 400
+        });
+    }
+
+    const track = _queue[index];
+    if (track) {
+        return Promise.resolve(track)
+    }
+    return Promise.reject({
+        message: `No track at index: ${index}.`,
+        statusCode: 404
+    });
+}
+
+function deQueueTrack(index) {
+
+    if (isNaN(index)) {
+        return Promise.reject({
+            message: 'Index must be a number.',
+            statusCode: 400
+        });
+    }
+
+    const track = _queue.splice(index, index + 1)[0];
+    if (track) {
         return Promise.resolve(track);
     }
     return Promise.reject({
@@ -312,7 +339,8 @@ module.exports = {
     nowPlaying,
     getQueue: () => Promise.resolve(_queue.concat()),
     clearQueue: () => Promise.resolve(_queue.splice(0, _queue.length)),
-    deQueue,
+    getQueuedTrack,
+    deQueueTrack,
     currentTrack: () => Promise.resolve(_currentTrack),
     getShuffle,
     toggleShuffle

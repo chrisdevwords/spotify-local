@@ -256,6 +256,17 @@ function queueTrack(track) {
     });
 }
 
+function deQueue(index) {
+    const tracks = _queue.splice(index, index + 1);
+    if (tracks.length) {
+        return Promise.resolve(track);
+    }
+    return Promise.reject({
+        message: `No track at index: ${index}.`,
+        statusCode: 404
+    });
+}
+
 function queueAlbum(album) {
     const position = _queue.length + 1;
     const { tracks } = album;
@@ -300,6 +311,8 @@ module.exports = {
     start,
     nowPlaying,
     getQueue: () => Promise.resolve(_queue),
+    clearQueue: () => Promise.resolve(_queue.splice(0, _queue.length)),
+    deQueue,
     currentTrack: () => Promise.resolve(_currentTrack),
     getShuffle,
     toggleShuffle

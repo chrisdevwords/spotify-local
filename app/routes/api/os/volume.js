@@ -1,23 +1,24 @@
 const express = require('express');
-const spotifyLocal = require('../../../services/spotify/local');
+const osVolume = require('../../../services/os/volume');
 
 
 const router = express.Router();
 
 router.get('/', (req, res, next) =>
-    spotifyLocal
+
+    osVolume
         .getVolume()
         .then((resp) => {
             res.json(resp);
         })
         .catch(next)
 );
-
+ 
 router.post('/', ({ body }, res, next) => {
 
     const { volume } = body;
 
-    spotifyLocal
+    osVolume
         .setVolume(volume)
         .then((resp) => {
             res.json(resp);

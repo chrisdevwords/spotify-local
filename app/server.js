@@ -5,13 +5,14 @@ const playing = require('./routes/api/spotify/playing');
 const playlist = require('./routes/api/spotify/playlist');
 const shuffle = require('./routes/api/spotify/shuffle');
 const pause = require('./routes/api/spotify/pause');
-const volume = require('./routes/api/spotify/volume');
+const spotifyVolume = require('./routes/api/spotify/volume');
+const osVolume = require('./routes/api/os/volume');
 const speech = require('./routes/api/os/speech');
 
 const middleware = require('./middleware');
 const errorManager = require('./middleware/error-manager');
 const spotifyLocal = require('./services/spotify/local');
-const spotifyApi = require('./services/spotify/api')
+const spotifyApi = require('./services/spotify/api');
 const ngrok = require('./services/ngrok');
 
 const app = express();
@@ -41,9 +42,10 @@ app.use('/api/spotify/queue', queue);
 app.use('/api/spotify/playlist', playlist);
 app.use('/api/spotify/playing', playing);
 app.use('/api/spotify/shuffle', shuffle);
-app.use('/api/spotify/volume', volume);
+app.use('/api/spotify/volume', spotifyVolume);
 app.use('/api/spotify/pause', pause);
 app.use('/api/os/speech', speech);
+app.use('/api/os/volume', osVolume);
 
 errorManager.configure(app);
 

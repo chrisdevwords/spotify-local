@@ -310,7 +310,7 @@ module.exports = {
     getPlaylist,
     start,
     nowPlaying,
-    getQueue: () => Promise.resolve(_queue),
+    getQueue: () => Promise.resolve(_queue.concat()),
     clearQueue: () => Promise.resolve(_queue.splice(0, _queue.length)),
     deQueue,
     currentTrack: () => Promise.resolve(_currentTrack),

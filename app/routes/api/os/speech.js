@@ -1,6 +1,6 @@
 
 const express = require('express');
-const speech = require('../../../../services/os/speech');
+const speech = require('../../../services/os/speech');
 
 const router = express.Router();
 

@@ -109,11 +109,15 @@ function findTrack(track) {
 
     const id = extractID(track);
 
-    return request
-        .get({
-            uri: TRACK_ENDPOINT(id),
-            json: true
-        })
+    return getToken()
+        .then(token => request.get({
+                uri: TRACK_ENDPOINT(id),
+                json: true,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        )
         .catch(processRequestError)
         .then(({ artists, name, uri, available_markets }) => {
 
@@ -137,11 +141,15 @@ function findTrack(track) {
 
 function findAlbum(link) {
     const id = extractID(link);
-    return request
-        .get({
-            uri: ALBUM_ENDPOINT(id),
-            json: true
-        })
+    return  getToken()
+        .then(token => request.get({
+                uri: ALBUM_ENDPOINT(id),
+                json: true,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        )
         .catch(processRequestError)
         .then(({ tracks, name, artists }) => {
 

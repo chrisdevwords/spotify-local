@@ -67,3 +67,7 @@ AWS_REGION=us-east-1
 AWS_FUNCTION_NAME=myFunctionName
 AWS_REGION=us-east-1
 ```
+
+## Swagger Docs
+1. Docs are viewable [on swaggerhub](https://swaggerhub.com/apis/chrisdevwords/LocalSpotify/0.0.1). 
+2. A [swagger.yaml](docs/swagger.yaml) file is also included with the project. 

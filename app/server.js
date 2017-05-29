@@ -12,7 +12,7 @@ const speech = require('./routes/api/os/speech');
 const middleware = require('./middleware');
 const errorManager = require('./middleware/error-manager');
 const spotifyLocal = require('./services/spotify/local');
-const spotifyApi = require('./services/spotify/api');
+const spotifyPlaylist = require('./services/spotify/api/playlist');
 const ngrok = require('./services/ngrok');
 
 const app = express();
@@ -54,7 +54,7 @@ const server = app.listen(PORT, () => {
     console.log(`Listening on http://${HOST}:${PORT}`);
 
     if (DEFAULT_PLAYLIST) {
-        spotifyApi.findPlaylist(DEFAULT_PLAYLIST)
+        spotifyPlaylist.findPlaylist(DEFAULT_PLAYLIST)
             .then(spotifyLocal.setPlaylist)
             .then(() => {
                 spotifyLocal.start();

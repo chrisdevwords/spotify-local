@@ -1,6 +1,6 @@
 
 const express = require('express');
-const spotifyApi = require('../../../services/spotify/api');
+const spotifyPlaylist = require('../../../services/spotify/api/playlist');
 const spotifyLocal = require('../../../services/spotify/local');
 
 const router = express.Router();
@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
 
-    spotifyApi
+    spotifyPlaylist
         .findPlaylist(req.body.playlist)
         .then(({ title, uri }) => {
             spotifyLocal

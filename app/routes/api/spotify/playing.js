@@ -1,7 +1,7 @@
 
 const express = require('express');
 const spotifyLocal = require('../../../services/spotify/local');
-const spotifyApi = require('../../../services/spotify/api');
+const spotifyTracks = require('../../../services/spotify/api/track');
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ router.post('/', (req, res, next) => {
 
     const { track, requestedBy } = req.body;
 
-    spotifyApi.findTrack(track)
+    spotifyTracks.findTrack(track)
         .then(result =>
             spotifyLocal.playTrack(
                 Object.assign(result, { requestedBy })

@@ -1,6 +1,7 @@
 
 const express = require('express');
-const spotifyApi = require('../../../services/spotify/api');
+const spotifyTracks = require('../../../services/spotify/api/track');
+const spotifyAlbums = require('../../../services/spotify/api/album');
 const spotifyLocal = require('../../../services/spotify/local');
 
 const router = express.Router();
@@ -17,7 +18,7 @@ router.post('/', (req, res, next) => {
 
     const { track, requestedBy } = req.body;
 
-    spotifyApi
+    spotifyTracks
         .findTrack(track)
         .then(result =>
             spotifyLocal.queueTrack(
@@ -42,7 +43,7 @@ router.delete('/', (req, res, next) => {
 
 router.post('/album', (req, res, next) => {
     const { album, requestedBy } = req.body;
-    spotifyApi
+    spotifyAlbums
         .findAlbum(album)
         .then((result) => {
             const tracks = result.tracks.map(

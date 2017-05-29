@@ -40,7 +40,7 @@ $ npm test
 
 
 ## ENV Vars for Spotify API Access
-In order to access the Spotify API to verify playlist info, you'll need to save 
+In order to access the Spotify API, you'll need to save 
 Spotify App Client ID and Secret in a local .env file in the root directory of the project.
 It will need to contain the following values:
 ```

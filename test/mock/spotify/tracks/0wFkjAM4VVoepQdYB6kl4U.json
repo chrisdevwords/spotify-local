@@ -11,7 +11,6 @@
       "type" : "artist",
       "uri" : "spotify:artist:5a2EaR3hamoenG9rDuVn8j"
     } ],
-    "available_markets" : [ "US" ],
     "external_urls" : {
       "spotify" : "https://open.spotify.com/album/0qcgEPOg67XnxGizdAAcGa"
     },
@@ -53,7 +52,6 @@
     "type" : "artist",
     "uri" : "spotify:artist:7bNJ8B2kMi9urGEfKPsBGP"
   } ],
-  "available_markets" : [ "US" ],
   "disc_number" : 1,
   "duration_ms" : 271666,
   "explicit" : false,
@@ -65,9 +63,10 @@
   },
   "href" : "https://api.spotify.com/v1/tracks/0wFkjAM4VVoepQdYB6kl4U",
   "id" : "0wFkjAM4VVoepQdYB6kl4U",
+  "is_playable" : true,
   "name" : "Gett Off",
-  "popularity" : 47,
-  "preview_url" : "https://p.scdn.co/mp3-preview/3c7b6b30b832fd600196ca1ca7fe911c6ea0390a?cid=null",
+  "popularity" : 44,
+  "preview_url" : "https://p.scdn.co/mp3-preview/3c7b6b30b832fd600196ca1ca7fe911c6ea0390a?cid=1158a25c499a4456829ff9e3d0d0dd45",
   "track_number" : 7,
   "type" : "track",
   "uri" : "spotify:track:0wFkjAM4VVoepQdYB6kl4U"

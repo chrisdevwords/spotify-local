@@ -14,14 +14,17 @@ function findTrack(track) {
         .then(token => request.get({
             uri: TRACK_ENDPOINT(id),
             json: true,
+            qs: {
+                market: process.env.MARKET || 'US'
+            },
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }))
         .catch(processRequestError)
-        .then(({ artists, name, uri, available_markets }) => {
-
-            if (!available_markets.includes('US')) {
+        .then(({ artists, name, uri, is_playable }) => {
+            // eslint-disable-next-line camelcase
+            if (!is_playable) {
                 const error = new Error('Track is not playable in US.');
                 error.statusCode = 405;
                 throw error;
@@ -40,5 +43,5 @@ function findTrack(track) {
 }
 
 module.exports = {
-    findTrack,
+    findTrack
 };

@@ -11,6 +11,9 @@ function findAlbum(link) {
     return auth.getToken()
         .then(token => request.get({
             uri: ALBUM_ENDPOINT(id),
+            qs: {
+                market: process.env.MARKET || 'US'
+            },
             json: true,
             headers: {
                 Authorization: `Bearer ${token}`
@@ -25,7 +28,7 @@ function findAlbum(link) {
 
             const parsedTracks = tracks.items
                 .filter(track =>
-                    track.available_markets.includes('US')
+                    track.is_playable
                 )
                 .map((track) => {
                     const artist = track.artists

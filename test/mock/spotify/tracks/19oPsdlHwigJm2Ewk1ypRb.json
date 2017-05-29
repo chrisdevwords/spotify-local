@@ -11,7 +11,6 @@
       "type" : "artist",
       "uri" : "spotify:artist:0jgAONnsHxrwAlhkMUVS78"
     } ],
-    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TR", "TW", "US", "UY" ],
     "external_urls" : {
       "spotify" : "https://open.spotify.com/album/6DLnBf2xooYa5UniuggpnD"
     },
@@ -44,7 +43,6 @@
     "type" : "artist",
     "uri" : "spotify:artist:0jgAONnsHxrwAlhkMUVS78"
   } ],
-  "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TR", "TW", "US", "UY" ],
   "disc_number" : 1,
   "duration_ms" : 260866,
   "explicit" : false,
@@ -56,9 +54,10 @@
   },
   "href" : "https://api.spotify.com/v1/tracks/19oPsdlHwigJm2Ewk1ypRb",
   "id" : "19oPsdlHwigJm2Ewk1ypRb",
+  "is_playable" : true,
   "name" : "Suspicions",
-  "popularity" : 27,
-  "preview_url" : "https://p.scdn.co/mp3-preview/7c1e43ed6a8241a649fc5e36d4725bf201ef23c7?cid=null",
+  "popularity" : 32,
+  "preview_url" : "https://p.scdn.co/mp3-preview/7c1e43ed6a8241a649fc5e36d4725bf201ef23c7?cid=1158a25c499a4456829ff9e3d0d0dd45",
   "track_number" : 4,
   "type" : "track",
   "uri" : "spotify:track:19oPsdlHwigJm2Ewk1ypRb"

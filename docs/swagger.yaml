@@ -1,0 +1,534 @@
+swagger: '2.0'
+info:
+  description: Control playback of a Spotify instance via locally running REST API.
+  version: 0.0.1
+  title: Local Spotify
+  # put the contact info for your development or API team
+  contact:
+    email: chrisedwards82@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: localhost:5000
+basePath: /api
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - https 
+  - http
+paths:
+  /spotify/playing:
+    get:
+      summary: gets the current track playing
+      description: |
+        Uses the AppleScript interface to determine what's playing in
+        Spotify.
+      responses:
+        200:
+          description: track currently playing
+          schema:
+            type: object
+            properties: 
+              track: 
+                $ref: "#/definitions/Track"
+    post:
+      summary: tell spotify to play a track
+      description: |
+        Immediately plays a track in spotify queue be damned.
+      parameters:
+        - in: body
+          name: body
+          description: add a track to the queue
+          schema: 
+            $ref: '#/definitions/TrackRequest'
+      responses:
+        200:
+          description: successfuly playing current track
+          schema:
+            type: object
+            properties: 
+              track: 
+                $ref: "#/definitions/Track"
+        404:
+          description: track not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              info:
+                $ref: "#/definitions/TrackRequest"
+        405:
+          description: track was found but is not playable
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              track:
+                $ref: "#/definitions/Track"
+    delete:
+      summary: skip the currently playing track
+      description: |
+        Skips the track currently playing. 
+        Plays either the next user queued track or next track in the playlist.
+      responses:
+        200:
+          description: track successfully skipped. next track is playing.
+          schema:
+            type: object
+            properties:
+              skippedTrack:
+                $ref: "#/definitions/Track"
+              currentTrack:
+                $ref: "#/definitions/Track"
+  /spotify/playlist:
+    get:
+      summary: get the default playlist
+      description: |
+        Returns the playlist from which Spotify plays when the queue is empty.
+      responses:
+        200:
+          description: info about the current playlist
+          schema:
+            type: object
+            properties:
+              name: 
+                type: string
+              uri: 
+                type: string
+    post:
+      summary: set the default playlist
+      description: |
+       Sets the playlist from which Spotify plays when the queue is empty.
+      parameters:
+        - in: body
+          name: body
+          description: the link, id or uri of the Spotify Playlist you wish to play
+          schema: 
+            type: object
+            properties:
+              playlist:
+                type: string
+      responses:
+        200:
+          description: playlist was successfully changed
+          schema:
+            type: object
+            properties:
+              name: 
+                type: string
+              uri: 
+                type: string
+          
+  /spotify/queue:
+    get:
+      summary: gets tracks currently queued
+      description: |
+        Returns the list of user submitted tracks currently queued.
+      responses:
+        200:
+          description: tracks in the queue
+          schema:
+            type: object
+            properties:
+              tracks:
+                $ref: '#/definitions/TrackList'
+    post:
+      summary: add a track to the queue
+      description: |
+        Pushes a spotify track to the user request queue,
+        in server memory if requested entity yields a valid Spotify track
+        from the Spotify API.
+      parameters:
+        - in: body
+          name: body
+          description: add a track to the queue
+          schema: 
+            $ref: '#/definitions/TrackRequest'
+        
+      responses:
+        200:
+          description: track successfully queued
+          schema:
+            type: object
+            properties: 
+              track: 
+                $ref: "#/definitions/Track"
+              position:
+                type: number
+                description: the position of the track within the current queue
+        404:
+          description: track not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              info:
+                $ref: "#/definitions/TrackRequest"
+        405:
+          description: track was found but is not playable
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              track:
+                $ref: "#/definitions/Track"
+    delete:
+      summary: clear the queue of tracks
+      description: |
+        Clears the queue of user submitted tracks. Returns queued tracks.  
+      responses:
+        200:
+          description: |
+            Queue was successfully cleared of the following tracks.
+          schema:
+            type: object
+            properties:
+              tracks:
+                $ref: '#/definitions/TrackList'  
+            
+  /spotify/queue/album:
+    post:
+      summary: add an album to the queue
+      description: |
+        Pushes the playable tracks of a spotify album to the user request queue
+        in server memory if requested entity yields a valid Spotify album
+        from the Spotify API.
+      parameters:
+        - in: body
+          name: body
+          description: add album tracks to the queue
+          schema: 
+            $ref: '#/definitions/AlbumRequest'
+      responses:
+        200:
+          description: track successfully queued
+          schema:
+            type: object
+            properties: 
+              track: 
+                $ref: "#/definitions/Album"
+              position:
+                type: number
+                description: the position of the album's tracks within the current queue
+        404:
+          description: album not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              info:
+                $ref: "#/definitions/AlbumRequest"
+  
+  /spotify/queue/{queueIndex}:
+    parameters:
+        - $ref: "#/parameters/QueueIndex"
+    get:
+      summary: track at a specific index in the queue
+      description: |
+        Retrieve a track from a specific index in the queue.
+      responses:
+        200:
+          description: |
+            Track at specified index.
+          schema:
+            type: object
+            properties: 
+              track: 
+                $ref: "#/definitions/Track"
+        400:
+          description: |
+            Invalid index.
+        404:
+          description: |
+            Index not found.
+    delete:
+      summary: dequeue a track by index
+      description: |
+        Remove a track from a specific index in the queue.
+      responses:
+        200:
+          description: |
+            Track successfully removed.
+          schema:
+            type: object
+            properties: 
+              track: 
+                $ref: "#/definitions/Track"
+        400:
+          description: |
+            Invalid index.
+        404:
+          description: |
+            Index not found.
+
+  /spotify/volume:
+    get:
+      summary: gets the current volume of the Spotify Player
+      description: |
+        Using AppleScript, fetches and returns the current volume of the Spotify Player, a number between 0 and 100.
+      responses:
+        200:
+          description: |
+            The current volume of the Spotify Player.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              volume:
+                type: number
+    post:
+      summary: sets the volume of the Spotify Player
+      description: |
+        Using AppleScript, this endpoint sets the volume of the Spotify Player to a value between 0 and 100.
+      parameters:
+        - in: body
+          name: body
+          description: Set the volume of Spotify to a value between 0 and 100.
+          schema: 
+            type: object
+            properties:
+              volume:
+                type: number
+      responses:
+        200:
+          description: |
+            The volume was successfully set to the value indicated in the POST body.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              volume:
+                type: number
+        400:
+          description: |
+            The volume parameter was either missing from the POST body or not a number between 0 and 100.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          
+  /spotify/shuffle:
+    get:
+      summary: gets shuffle status of Spotify Player
+      description: |
+        Returns a true if Spotify is shuffling, false if it's not.
+      responses:
+        200:
+          description: the current shuffle status of Spotify
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              shuffling:
+                type: boolean
+    post:
+      summary: toggles shuffle status of Spotify Player
+      description: |
+        Returns a true if Spotify is shuffling, false if it's not.
+      responses:
+        200:
+          description: toggles shuffle status of Spotify
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              shuffling:
+                type: boolean
+  
+  /spotify/pause:
+    get:
+      summary: gets paused status of Spotify Player
+      description: |
+        Returns a true if Spotify is paused, false if it's not.
+      responses:
+        200:
+          description: the current pause status of Spotify
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              paused:
+                type: boolean
+    post:
+      summary: sets pause status of Spotify Player
+      description: |
+        Returns a true if Spotify is shuffling, false if it's not.
+      parameters:
+        - in: body
+          name: body
+          description: Set paused to true or false.
+          schema: 
+            type: object
+            properties:
+              paused:
+                type: boolean
+      responses:
+        200:
+          description: toggles shuffle status of Spotify
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              paused:
+                type: boolean
+  /os/speech:
+    post:
+      summary: Tell the computer to speak.
+      description: |
+        Using the system "say" command, computer will say the message contained in the post body.
+      parameters:
+        - in: body
+          name: body
+          description: Say something.
+          schema: 
+            type: object
+            properties:
+              message:
+                type: string
+      responses:
+        200:
+          description: Speech successful.
+        429:
+          description: Computer is currently speaking.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /os/volume:
+    get:
+      summary: gets the current system volume of the Mac
+      description: |
+        Using AppleScript, fetches and returns the current system volume of the host Mac, a number between 0 and 100.
+      responses:
+        200:
+          description: |
+            The current system volume of the Mac.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              volume:
+                type: number
+    post:
+      summary: sets the system volume of the Mac running the server
+      description: |
+        Using AppleScript, this endpoint sets the system volume of the Mac 
+        running the server to a value between 0 and 100.
+      parameters:
+        - in: body
+          name: body
+          description: Set the volume of Spotify to a value between 0 and 100.
+          schema: 
+            type: object
+            properties:
+              volume:
+                type: number
+      responses:
+        200:
+          description: |
+            The volume was successfully set to the value indicated in the POST body.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              volume:
+                type: number
+        400:
+          description: |
+            The volume parameter was either missing from the POST body or not a number between 0 and 100.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                
+definitions:
+  TrackList:
+    type: array
+    items:
+      $ref: "#/definitions/Track"
+  Track:
+    type: object
+    properties:
+      uri: 
+        type: string
+        description: spotify uri
+      name: 
+        type: string
+        description: track title
+      artist: 
+        type: string
+        description: track artist
+      requestedBy: 
+        type: string
+        description: handle of user who requested the track
+        default: API
+  TrackRequest:
+    type: object
+    properties:
+      track: 
+        type: string
+        description: |
+          A spotify track id, 
+          a spotify uri,
+          a spotify http link,
+          or a query to search the Spotify API, playing the first result
+      requestedBy:
+          type: string
+          description: |
+            Handle of user requesting the track.
+          default: API
+  Album:
+    type: object
+    properties:
+      name: 
+        type: string
+        description: track title
+      artist: 
+        type: string
+        description: track artist
+      tracks:
+        $ref: '#/definitions/TrackList' 
+      requestedBy: 
+        type: string
+        description: handle of user who requested the track
+        default: API
+  AlbumRequest:
+    type: object
+    properties:
+      album: 
+        type: string
+        description: |
+          A spotify album id, 
+          a spotify uri,
+          a spotify http link,
+          or a query to search the Spotify API, playing the first result
+      requestedBy:
+          type: string
+          description: |
+            Handle of user requesting the track.
+          default: API
+          
+parameters:
+  QueueIndex:
+    name: queueIndex
+    type: integer
+    in: path
+    required: true

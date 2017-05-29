@@ -49,6 +49,13 @@ SPOTIFY_SECRET=XXXX
 ```
 For more information on Spotify API Authorization or to obtain your own credentials, see: [The Spotify API Authorization Guide](https://developer.spotify.com/web-api/authorization-guide/).
 
+## ENV Var for Market
+By default the server is configured to play tracks only avaible in the US market.
+Change the market by adding an env var specifying [your country code](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) to an .env file:
+```
+MARKET=GB
+```
+
 ## ENV Vars for Slack Integration
 If you would like to run the [AWS Lambda Slack Integration](https://github.com/chrisdevwords/slack-spotify-lambda),
 the environment var for the `SPOTIFY_LOCAL_URL` can be updated everytime the server is started by adding the following

@@ -1,10 +1,8 @@
-
 const request = require('request-promise-native');
+const auth = require('./api/auth');
 
-const TOKEN_ERROR = 'Error getting Spotify Token';
 
 const API_BASE = 'https://api.spotify.com/';
-const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
 const TRACK_ENDPOINT = trackId => `${API_BASE}v1/tracks/${trackId}`;
 const ALBUM_ENDPOINT = id => `${API_BASE}v1/albums/${id}`;
 const PLAYLIST_ENDPOINT = (userId, playlistId) =>
@@ -59,43 +57,16 @@ function processRequestError(req) {
     throw err;
 }
 
-function getToken() {
-
-    const { SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env;
-    const creds = `${SPOTIFY_CLIENT_ID}:${SPOTIFY_SECRET}`;
-    const encoded = new Buffer(creds).toString('base64');
-
-    return request
-        .post({
-            uri: TOKEN_ENDPOINT,
-            headers: {
-                Authorization: `Basic ${encoded}`,
-                'content-type': 'application/x-www-form-urlencoded'
-            },
-            body: 'grant_type=client_credentials'
-        })
-        .then(resp =>
-            JSON.parse(resp).access_token
-        )
-        .catch(({ statusCode = 500 }) => {
-            const err = new Error(TOKEN_ERROR);
-            err.statusCode = statusCode;
-            throw err;
-        });
-}
-
 function findPlaylist(playlist) {
     const { userId, playlistId } = parsePlaylist(playlist);
-    return getToken()
-        .then(token =>
-            request.get({
-                uri: PLAYLIST_ENDPOINT(userId, playlistId),
-                json: true,
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-        )
+    return auth.getToken()
+        .then(token => request.get({
+            uri: PLAYLIST_ENDPOINT(userId, playlistId),
+            json: true,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }))
         .catch(processRequestError)
         .then(({ uri, name }) =>
             ({
@@ -109,15 +80,14 @@ function findTrack(track) {
 
     const id = extractID(track);
 
-    return getToken()
+    return auth.getToken()
         .then(token => request.get({
-                uri: TRACK_ENDPOINT(id),
-                json: true,
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-        )
+            uri: TRACK_ENDPOINT(id),
+            json: true,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }))
         .catch(processRequestError)
         .then(({ artists, name, uri, available_markets }) => {
 
@@ -141,15 +111,14 @@ function findTrack(track) {
 
 function findAlbum(link) {
     const id = extractID(link);
-    return  getToken()
+    return auth.getToken()
         .then(token => request.get({
-                uri: ALBUM_ENDPOINT(id),
-                json: true,
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-        )
+            uri: ALBUM_ENDPOINT(id),
+            json: true,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }))
         .catch(processRequestError)
         .then(({ tracks, name, artists }) => {
 
@@ -182,11 +151,9 @@ function findAlbum(link) {
 }
 
 module.exports = {
-    getToken,
     findTrack,
     findPlaylist,
     findAlbum,
     parsePlaylist,
-    extractID,
-    TOKEN_ERROR
+    extractID
 };

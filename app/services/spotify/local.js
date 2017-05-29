@@ -283,8 +283,7 @@ function deQueueTrack(index) {
             statusCode: 400
         });
     }
-
-    const track = _queue.splice(index, index + 1)[0];
+    const track = _queue.splice(index, 1)[0];
     if (track) {
         return Promise.resolve(track);
     }

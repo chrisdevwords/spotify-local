@@ -3,7 +3,13 @@
     <main class="measure">
         <header class="p1 txt--center">
             <h1 class="h1 fnt--green">Office Spotify</h1>
+            {%  if not accessToken %}
+            <form class="txt--left m2" role="form" action="/login" method="post">
+                <input type="submit" class="btn--green" value="Generate Spotify Access Token">
+            </form>
+            {% endif %}
         </header>
+
         <div class="grd">
             <div class="grd-row m1">
                 <section id="now-playing" class="bg--off-white p2 grd-row-col-3-6--md">

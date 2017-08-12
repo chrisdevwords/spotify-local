@@ -41,23 +41,29 @@ function getLambdaConfig(lambda, functionName) {
             reject(err);
         }
     });
-
-
 }
 
-function updateLambdaTunnel(functionName, ngrokTunnel, region = 'us-east-1') {
+function updateLambdaFunction(functionName, envVars, region = 'us-east-1') {
+    const {
+        AWS_ACCESS_KEY_ID,
+        AWS_SECRET_ACCESS_KEY
+    } = process.env;
 
-    const lambda = new AWS.Lambda({ region });
+    const lambdaClient = new AWS.Lambda({
+        region,
+        accessKeyId:AWS_ACCESS_KEY_ID,
+        secretAccessKey: AWS_SECRET_ACCESS_KEY
+    });
 
-    return getLambdaConfig(lambda, functionName)
-        .then(({Environment}) => {
-            const {Variables} = Environment;
+    return getLambdaConfig(lambdaClient, functionName)
+        .then(({ Environment = {} }) => {
+            const { Variables = {} } = Environment;
             const updatedVars = Object.assign(
                 {},
                 Variables,
-                { SPOTIFY_LOCAL_URL: ngrokTunnel }
+                envVars
             );
-            return updateLambdaConfig(lambda, functionName, {
+            return updateLambdaConfig(lambdaClient, functionName, {
                 Environment: Object.assign(
                     {},
                     Environment,
@@ -67,6 +73,21 @@ function updateLambdaTunnel(functionName, ngrokTunnel, region = 'us-east-1') {
         });
 }
 
+const updateLambdaEnvVars = (funcNames, envVars, region = 'us-east-1') =>
+    Promise.all(
+        funcNames.split(',').map(functionName =>
+            updateLambdaFunction(functionName, envVars, region)
+        )
+    );
+
+const updateLambdaTunnel = (funcNames, ngrokUrl, region = 'us-east-1') =>
+    updateLambdaEnvVars(
+        funcNames,
+        { SPOTIFY_LOCAL_URL: ngrokUrl },
+        region
+    );
+
 module.exports = {
+    updateLambdaEnvVars,
     updateLambdaTunnel
 };

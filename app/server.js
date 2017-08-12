@@ -74,10 +74,10 @@ const server = app.listen(PORT, () => {
 
     if (TUNNEL) {
         ngrok.openTunnel(PORT, AWS_FUNCTION_NAME, AWS_REGION)
-            .then(({ url, lambdaName }) => {
+            .then(({ url, lambdaNames }) => {
                 console.log('Server Public URL:', url);
-                if (lambdaName) {
-                    console.log('Lambda:', lambdaName, ' config updated.');
+                if (lambdaNames) {
+                    console.log('Lambdas:', lambdaNames, ' config updated.');
                 }
             })
             .catch((err) => {

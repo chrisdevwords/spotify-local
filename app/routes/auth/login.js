@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
     const qs =  querystring.stringify({
         response_type: 'code',
         client_id: SPOTIFY_CLIENT_ID,
-        scopes: scopes.join(' '),
+        scope: scopes.join(' '),
         redirect_uri: `http://localhost:${PORT}/login/callback`,
         //state: state
     });

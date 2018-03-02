@@ -68,6 +68,13 @@ AWS_FUNCTION_NAME=myFunctionName
 AWS_REGION=us-east-1
 ```
 
+## ENV Var for NGROK 
+[NGROK](https://ngrok.com) requires an auth token for connections open longer than 24 hours. To open an ngrok tunnel with an auth token, 
+[sign up for a free account](https://dashboard.ngrok.com/user/signup) and add the following lines to the .env file:
+```
+NGROK_AUTH_TOKEN=mytoken
+```
+
 ## Swagger Docs
 1. Docs are viewable [on swaggerhub](https://swaggerhub.com/apis/chrisdevwords/LocalSpotify/0.0.1). 
 2. A [swagger.yaml](docs/swagger.yaml) file is also included with the project. 

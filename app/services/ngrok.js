@@ -10,8 +10,9 @@ function connect(params) {
                 resolve(url)
             }
         };
+        const authtoken = process.env.NGROK_AUTH_TOKEN;
         try {
-            ngrok.connect(params, cb);
+            ngrok.connect(Object.assign({ authtoken }, params), cb);
         } catch (err) {
             reject(err);
         }

@@ -8,12 +8,14 @@ const pause = require('./routes/api/spotify/pause');
 const spotifyVolume = require('./routes/api/spotify/volume');
 const osVolume = require('./routes/api/os/volume');
 const speech = require('./routes/api/os/speech');
+const login = require('./routes/auth/login');
 
 const middleware = require('./middleware');
 const errorManager = require('./middleware/error-manager');
 const spotifyLocal = require('./services/spotify/local');
 const spotifyPlaylist = require('./services/spotify/api/playlist');
 const ngrok = require('./services/ngrok');
+const authService = require('./services/spotify/api/auth');
 
 const app = express();
 
@@ -32,12 +34,16 @@ middleware.configure(app);
 
 // routes
 app.get('/', (req, res) => {
+    const accessToken = authService.getAccessToken();
     const docLink = 'https://app.swaggerhub.com/api/' +
-        'chrisdevwords/LocalSpotify/0.0.1';
+                    'chrisdevwords/LocalSpotify/0.0.1';
     res.render('index', {
-        docLink
-    })
+        docLink,
+        accessToken
+    });
 });
+
+app.use('/login', login);
 app.use('/api/spotify/queue', queue);
 app.use('/api/spotify/playlist', playlist);
 app.use('/api/spotify/playing', playing);
@@ -68,10 +74,10 @@ const server = app.listen(PORT, () => {
 
     if (TUNNEL) {
         ngrok.openTunnel(PORT, AWS_FUNCTION_NAME, AWS_REGION)
-            .then(({ url, lambdaName }) => {
+            .then(({ url, lambdaNames }) => {
                 console.log('Server Public URL:', url);
-                if (lambdaName) {
-                    console.log('Lambda:', lambdaName, ' config updated.');
+                if (lambdaNames) {
+                    console.log('Lambdas:', lambdaNames, ' config updated.');
                 }
             })
             .catch((err) => {

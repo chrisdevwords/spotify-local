@@ -1,5 +1,5 @@
 const ngrok = require('ngrok');
-const { updateLambdaTunnel } = require('./aws/lambda');
+const lambda = require('./aws/lambda');
 
 function connect(params) {
     return new Promise((resolve, reject) => {
@@ -19,13 +19,14 @@ function connect(params) {
 }
 
 
-function openTunnel(port, lambdaName, lambdaRegion = 'us-east-1') {
+function openTunnel(port, lambdaNames, lambdaRegion = 'us-east-1') {
     return connect({ addr: port })
         .then((url) => {
-            if (lambdaName) {
-                return updateLambdaTunnel(lambdaName, url, lambdaRegion)
+            if (lambdaNames) {
+                return lambda
+                    .updateLambdaTunnel(lambdaNames, url, lambdaRegion)
                     .then(() => ({
-                        lambdaName,
+                        lambdaNames,
                         url
                     }))
             }

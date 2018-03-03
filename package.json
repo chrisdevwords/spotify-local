@@ -11,7 +11,7 @@
     "lint": "eslint app --ignore-path .gitignore",
     "build": "browserify app/public/src/js/main.js --debug -o app/public/dist/js/main.js",
     "watch": "nodemon --watch app/public/src --exec npm run build -e js",
-    "start": "PORT=5000 TUNNEL=true node app/server.js",
+    "start": "npm run build && PORT=5000 TUNNEL=true node app/server.js",
     "start:demon": "PORT=5000 nodemon app/server -e js,twig --ignore app/public",
     "start:dev": "concurrently --kill-others \"npm run watch\" \"npm run start:demon\"",
     "tunnel": "ngrok http 5000"

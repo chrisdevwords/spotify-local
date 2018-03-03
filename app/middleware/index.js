@@ -30,6 +30,10 @@ function configure(app) {
         PATH.resolve(__dirname, ROOT, 'app/public/assets')
     ));
 
+    app.use(express.static(
+        PATH.resolve(__dirname, ROOT, 'app/public/dist')
+    ));
+
     // nunjucks template engine
     const templateDir = PATH.resolve(__dirname, ROOT, 'app/views');
     app.set('views', templateDir);

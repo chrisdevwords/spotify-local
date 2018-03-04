@@ -1,7 +1,7 @@
 
 const PATH = require('path');
-const appleScript = require('../../lib/apple-script')
-
+const appleScript = require('../../lib/apple-script');
+const events = require('./events');
 
 const INVALID_VOLUME = 'Volume must be a number between 0 and 100.';
 const ROOT = '../../../';
@@ -176,6 +176,7 @@ function playTrack(track) {
         .execString(SCRIPT_PLAY(track.uri))
         .then(() => {
             _currentTrack = track;
+            _socket.emit(events.NOW_PLAYING, _currentTrack);
             return track;
         });
 }
@@ -203,10 +204,13 @@ function checkCurrentTrack() {
                     { requestedBy: _playlist.title },
                     trackInfo
                 );
+                _socket.emit(events.NOW_PLAYING, _currentTrack);
             } else if (_currentTrack.uri !== trackInfo.uri) {
                 if (_queue.length) {
                     // tell spotify to play the next queued track
-                    return playTrack(_queue.shift())
+                    const track = _queue.shift();
+                    _socket.emit(events.TRACKS_QUEUED, _queue);
+                    return playTrack(track)
                         .then(nowPlaying)
                 }
                 // set the current track to what's current playing
@@ -214,6 +218,7 @@ function checkCurrentTrack() {
                     { requestedBy: _playlist.title },
                     trackInfo
                 );
+                _socket.emit(events.NOW_PLAYING, _currentTrack);
             }
             return _currentTrack;
         });
@@ -227,7 +232,9 @@ function nextTrack() {
 
     const skippedTrack = _currentTrack;
     if (_queue.length) {
-        return playTrack(_queue.shift())
+        const track = _queue.shift();
+        _socket.emit(events.TRACKS_QUEUED, _queue);
+        return playTrack(track)
             .then(() => delayCall(checkCurrentTrack, 500))
             .then(currentTrack => ({
                 skippedTrack,
@@ -251,6 +258,7 @@ function nextTrack() {
 
 function queueTrack(track) {
     const position = _queue.push(track);
+    _socket.emit(events.TRACKS_QUEUED, _queue);
     return Promise.resolve({
         track,
         position
@@ -286,6 +294,7 @@ function deQueueTrack(index) {
     }
     const track = _queue.splice(index, 1)[0];
     if (track) {
+        _socket.emit(events.TRACKS_QUEUED, _queue);
         return Promise.resolve(track);
     }
     return Promise.reject({
@@ -294,10 +303,16 @@ function deQueueTrack(index) {
     });
 }
 
+function clearQueue() {
+    _socket.emit(events.TRACKS_QUEUED, []);
+    return Promise.resolve(_queue.splice(0, _queue.length));
+}
+
 function queueAlbum(album) {
     const position = _queue.length + 1;
     const { tracks } = album;
     tracks.forEach(track => _queue.push(track));
+    _socket.emit(events.TRACKS_QUEUED, _queue);
     return Promise.resolve({
         position,
         album
@@ -344,7 +359,7 @@ module.exports = {
     init,
     nowPlaying,
     getQueue: () => Promise.resolve(_queue.concat()),
-    clearQueue: () => Promise.resolve(_queue.splice(0, _queue.length)),
+    clearQueue,
     getQueuedTrack,
     deQueueTrack,
     currentTrack: () => Promise.resolve(_currentTrack),

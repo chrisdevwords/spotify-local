@@ -10,11 +10,13 @@ const spotifyVolume = require('./routes/api/spotify/volume');
 const osVolume = require('./routes/api/os/volume');
 const speech = require('./routes/api/os/speech');
 const login = require('./routes/auth/login');
+const tube = require('./routes/api/slacktube');
 
 const middleware = require('./middleware');
 const errorManager = require('./middleware/error-manager');
 const spotifyLocal = require('./services/spotify/local');
 const spotifyPlaylist = require('./services/spotify/api/playlist');
+const slackTube = require('./services/slack-tube');
 const ngrok = require('./services/ngrok');
 const authService = require('./services/spotify/api/auth');
 const sockets = require('./sockets');
@@ -29,7 +31,8 @@ const {
     AWS_FUNCTION_NAME,
     AWS_REGION,
     TUNNEL,
-    DEFAULT_PLAYLIST
+    DEFAULT_PLAYLIST,
+    DEFAULT_YOUTUBE
 } = process.env;
 
 middleware.configure(app);
@@ -53,6 +56,7 @@ app.use('/api/spotify/shuffle', shuffle);
 app.use('/api/spotify/pause', pause);
 app.use('/api/os/speech', speech);
 app.use('/api/os/volume', osVolume);
+app.use('/api/tube', tube);
 
 errorManager.configure(app);
 
@@ -75,6 +79,8 @@ server.listen(PORT, () => {
     } else {
         spotifyLocal.init(io.spotify);
     }
+
+    slackTube.init(io.youtube, DEFAULT_YOUTUBE);
 
     if (TUNNEL) {
         ngrok.openTunnel(PORT, AWS_FUNCTION_NAME, AWS_REGION)

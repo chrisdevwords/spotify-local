@@ -57,7 +57,7 @@ app.use('/api/os/volume', osVolume);
 errorManager.configure(app);
 
 const server = http.createServer(app);
-const socket = sockets.create(server);
+const io = sockets.create(server);
 
 server.listen(PORT, () => {
     /* eslint-disable no-console */
@@ -67,13 +67,13 @@ server.listen(PORT, () => {
         spotifyPlaylist.findPlaylist(DEFAULT_PLAYLIST)
             .then(spotifyLocal.setPlaylist)
             .then(() => {
-                spotifyLocal.init(socket);
+                spotifyLocal.init(io.spotify);
             })
             .catch((err) => {
                 console.log('Error getting playlist', err);
             });
     } else {
-        spotifyLocal.init(socket);
+        spotifyLocal.init(io.spotify);
     }
 
     if (TUNNEL) {

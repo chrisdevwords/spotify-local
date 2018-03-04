@@ -44,7 +44,7 @@ function displayQueue(tracks) {
 }
 
 function connectSocket() {
-    const socket = io(`http://${window.location.host}`);
+    const socket = io(`http://${window.location.host}/spotify`);
     socket.on('now playing', (trackInfo) => {
         displayNowPlaying(trackInfo);
     });

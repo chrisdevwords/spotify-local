@@ -1,9 +1,11 @@
 const socketIO = require('socket.io');
 const spotify = require('./services/spotify/local');
+const slackTube = require('./services/slack-tube');
 const { NOW_PLAYING, TRACKS_QUEUED } = require('./services/spotify/events');
 
 let _io;
 let _spotify;
+let _youtube;
 
 function create(server) {
     _io = socketIO(server);
@@ -20,7 +22,15 @@ function create(server) {
                 socket.emit(TRACKS_QUEUED, queue);
             });
     });
-    return { io: _io, spotify: _spotify }
+    _youtube = _io.of('/youtube');
+    _youtube.on('connection', (socket) => {
+        slackTube
+            .getPlaying()
+            .then((playing) => {
+                socket.emit(slackTube.NOW_PLAYING, playing);
+            });
+    });
+    return { io: _io, spotify: _spotify, youtube: _youtube }
 }
 
 function getIO() {

@@ -1,1 +1,1 @@
-const home = require("./home");
+require('./home');

@@ -1,79 +1,57 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+const io = require('socket.io-client');
 
-(function init() {
+let currentTrack;
+let requestedBy;
+let queuedTracks;
 
-    let currentTrack;
-    let requestedBy;
-    let queuedTracks;
+function displayNowPlaying(trackInfo) {
+    currentTrack = currentTrack
+        || document.getElementById('current-track');
+    requestedBy = requestedBy
+        || document.getElementById('requested-by');
 
-    function fetchPlaying() {
-        return fetch('/api/spotify/playing')
-            .then(resp => resp.json());
-    }
+    // eslint-disable-next-line quotes
+    currentTrack.innerText = `${trackInfo.artist} - "${trackInfo.name}"`;
+    requestedBy.innerText = `Requested by: ${trackInfo.requestedBy}`;
+}
 
-    function displayNowPlaying(trackInfo) {
-        currentTrack = currentTrack
-            || document.getElementById('current-track');
-        requestedBy = requestedBy
-            || document.getElementById('requested-by');
+function displayQueue(tracks) {
+    queuedTracks = queuedTracks ||
+            document.getElementById('queued-tracks');
 
-        // eslint-disable-next-line quotes
-        currentTrack.innerText = `${trackInfo.artist} - "${trackInfo.name}"`;
-        requestedBy.innerText = `Requested by: ${trackInfo.requestedBy}`;
-    }
+    let html;
 
-    function displayQueue(tracks) {
-        queuedTracks = queuedTracks ||
-                document.getElementById('queued-tracks');
-
-        let html;
-
-        if (tracks.length) {
+    if (tracks.length) {
+        // eslint-disable-next-line prefer-template
+        html = '<ol>' +
+                tracks.map(track =>
+                    // eslint-disable-next-line prefer-template
+                    '<li>' +
+                        // eslint-disable-next-line quotes
+                        `${track.artist} - "${track.name}"` +
+                        `<br/> Requested by: ${track.requestedBy}` +
+                    // eslint-disable-next-line prefer-template
+                    '</li>'
+                ).join('') +
             // eslint-disable-next-line prefer-template
-            html = '<ol>' +
-                    tracks.map(track =>
-                        // eslint-disable-next-line prefer-template
-                        '<li>' +
-                            // eslint-disable-next-line quotes
-                            `${track.artist} - "${track.name}"` +
-                            `<br/> Requested by: ${track.requestedBy}` +
-                        // eslint-disable-next-line prefer-template
-                        '</li>'
-                    ).join('') +
-                // eslint-disable-next-line prefer-template
-                '</ol>';
-        } else {
-            html = '<p>No tracks are currently queued.</p>'
-        }
-
-        queuedTracks.innerHTML = html;
+            '</ol>';
+    } else {
+        html = '<p>No tracks are currently queued.</p>'
     }
 
-    function fetchQueue() {
-        return fetch('/api/spotify/queue')
-            .then(resp => resp.json());
-    }
+    queuedTracks.innerHTML = html;
+}
 
-    function update() {
-        return Promise.all([
-            fetchPlaying(),
-            fetchQueue()
-        ]).then(([{ track }, { tracks }]) => {
-            displayNowPlaying(track);
-            displayQueue(tracks);
-            return true;
-        });
-    }
+function connectSocket() {
+    const socket = io(`http://${window.location.host}`);
+    socket.on('now playing', (trackInfo) => {
+        displayNowPlaying(trackInfo);
+    });
 
-    function start() {
-        setTimeout(() => {
-            update()
-                .then(start)
-                .catch((err) => {
-                    // eslint-disable-next-line no-console
-                    console.log(err);
-                });
-        }, 2000)
-    }
+    socket.on('tracks queued', (tracks) => {
+        displayQueue(tracks)
+    });
+}
 
-    start();
-}());
+connectSocket();

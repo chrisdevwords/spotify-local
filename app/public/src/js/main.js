@@ -1,2 +1,2 @@
-require('./home');
+require('./spotify');
 require('./youtube');

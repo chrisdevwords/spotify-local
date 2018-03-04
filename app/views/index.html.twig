@@ -1,4 +1,8 @@
 {% extends "_global/base.html.twig" %}
+{%  block css %}
+{{ super() }}
+<link rel="stylesheet" href="css/main.css" />
+{%  endblock %}
 {% block content %}
     <main class="measure">
         <header class="p1 txt--center">
@@ -9,7 +13,6 @@
             </form>
             {% endif %}
         </header>
-
         <div class="grd">
             <div class="grd-row m1">
                 <section id="now-playing" class="bg--off-white p2 grd-row-col-3-6--md">
@@ -23,6 +26,9 @@
                 </section>
             </div>
         </div>
+        <section class="measure txt--center">
+            <div id="yt-player"></div>
+        </section>
         <footer class="txt--center">
             <nav>
                 <a href="{{ docLink }}" target="_blank">Read the API Docs.</a>

@@ -1,3 +1,4 @@
+const http = require('http');
 const express = require('express');
 const dotenv = require('dotenv');
 const queue = require('./routes/api/spotify/queue');
@@ -16,6 +17,7 @@ const spotifyLocal = require('./services/spotify/local');
 const spotifyPlaylist = require('./services/spotify/api/playlist');
 const ngrok = require('./services/ngrok');
 const authService = require('./services/spotify/api/auth');
+const sockets = require('./sockets');
 
 const app = express();
 
@@ -48,14 +50,16 @@ app.use('/api/spotify/queue', queue);
 app.use('/api/spotify/playlist', playlist);
 app.use('/api/spotify/playing', playing);
 app.use('/api/spotify/shuffle', shuffle);
-app.use('/api/spotify/volume', spotifyVolume);
 app.use('/api/spotify/pause', pause);
 app.use('/api/os/speech', speech);
 app.use('/api/os/volume', osVolume);
 
 errorManager.configure(app);
 
-const server = app.listen(PORT, () => {
+const server = http.createServer(app);
+const socket = sockets.create(server);
+
+server.listen(PORT, () => {
     /* eslint-disable no-console */
     console.log(`Listening on http://${HOST}:${PORT}`);
 
@@ -63,13 +67,13 @@ const server = app.listen(PORT, () => {
         spotifyPlaylist.findPlaylist(DEFAULT_PLAYLIST)
             .then(spotifyLocal.setPlaylist)
             .then(() => {
-                spotifyLocal.start();
+                spotifyLocal.init(socket);
             })
             .catch((err) => {
                 console.log('Error getting playlist', err);
             });
     } else {
-        spotifyLocal.start();
+        spotifyLocal.init(socket);
     }
 
     if (TUNNEL) {

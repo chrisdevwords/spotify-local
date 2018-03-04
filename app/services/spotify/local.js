@@ -39,6 +39,7 @@ const _queue = [];
 let _playlist = _defaultPlaylist;
 let _currentTrack;
 let _timer;
+let _socket;
 let _paused = false;
 
 function delayCall(f, delay) {
@@ -322,6 +323,11 @@ function start() {
     }, 300);
 }
 
+function init(socket) {
+    _socket = socket;
+    start()
+}
+
 module.exports = {
     pause,
     resume,
@@ -335,6 +341,7 @@ module.exports = {
     setPlaylist,
     getPlaylist,
     start,
+    init,
     nowPlaying,
     getQueue: () => Promise.resolve(_queue.concat()),
     clearQueue: () => Promise.resolve(_queue.splice(0, _queue.length)),

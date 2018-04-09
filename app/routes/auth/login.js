@@ -13,7 +13,8 @@ router.post('/', (req, res) => {
     const scopes = [
         'playlist-modify-public',
         'playlist-modify-private',
-        'playlist-read-private'
+        'playlist-read-private',
+        'user-read-currently-playing'
     ];
     const qs =  querystring.stringify({
         response_type: 'code',

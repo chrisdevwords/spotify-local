@@ -54,6 +54,7 @@ app.use('/api/spotify/playlist', playlist);
 app.use('/api/spotify/playing', playing);
 app.use('/api/spotify/shuffle', shuffle);
 app.use('/api/spotify/pause', pause);
+app.use('/api/spotify/volume', spotifyVolume);
 app.use('/api/os/speech', speech);
 app.use('/api/os/volume', osVolume);
 app.use('/api/tube', tube);

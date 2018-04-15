@@ -18,6 +18,7 @@ const spotifyLocal = require('./services/spotify/local');
 const spotifyPlaylist = require('./services/spotify/api/playlist');
 const slackTube = require('./services/slack-tube');
 const ngrok = require('./services/ngrok');
+const localTunnel = require('./services/local-tunnel');
 const authService = require('./services/spotify/api/auth');
 const sockets = require('./sockets');
 
@@ -31,6 +32,7 @@ const {
     AWS_FUNCTION_NAME,
     AWS_REGION,
     TUNNEL,
+    USE_LOCAL_TUNNEL,
     DEFAULT_PLAYLIST,
     DEFAULT_YOUTUBE
 } = process.env;
@@ -84,7 +86,8 @@ server.listen(PORT, () => {
     slackTube.init(io.youtube, DEFAULT_YOUTUBE);
 
     if (TUNNEL) {
-        ngrok.openTunnel(PORT, AWS_FUNCTION_NAME, AWS_REGION)
+        const tunnel = USE_LOCAL_TUNNEL ? localTunnel : ngrok;
+        tunnel.openTunnel(PORT, AWS_FUNCTION_NAME, AWS_REGION)
             .then(({ url, lambdaNames }) => {
                 console.log('Server Public URL:', url);
                 if (lambdaNames) {

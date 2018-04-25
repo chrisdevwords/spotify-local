@@ -1,7 +1,8 @@
-
 const PATH = require('path');
 const appleScript = require('../../lib/apple-script');
 const events = require('./events');
+const spotifyUser = require('./api/user');
+const spotifyPlaylist = require('./api/playlist');
 
 const INVALID_VOLUME = 'Volume must be a number between 0 and 100.';
 const ROOT = '../../../';
@@ -319,6 +320,31 @@ function queueAlbum(album) {
     });
 }
 
+function checkPlaylist() {
+    spotifyUser
+        .getCurrentPlaylist()
+        .then((uri) => {
+            if (uri && uri !== _playlist.uri) {
+                return spotifyPlaylist
+                    .findPlaylist(uri);
+            }
+            return null;
+        })
+        .then((newPlaylist) => {
+            if (newPlaylist) {
+                // eslint-disable-next-line no-console
+                console.log('Playlist changed:', newPlaylist);
+                _playlist = newPlaylist;
+                _currentTrack.requestedBy = newPlaylist.title;
+                _socket.emit(events.NOW_PLAYING, _currentTrack);
+            }
+        })
+        .catch((err) => {
+            // eslint-disable-next-line no-console
+            console.log(err);
+        });
+}
+
 function start() {
     clearTimeout(_timer);
     _timer = setTimeout(() => {
@@ -340,7 +366,8 @@ function start() {
 
 function init(socket) {
     _socket = socket;
-    start()
+    start();
+    setInterval(checkPlaylist, 60000);
 }
 
 module.exports = {

@@ -14,9 +14,6 @@ function findTrack(track) {
         .then(token => request.get({
             uri: TRACK_ENDPOINT(id),
             json: true,
-            qs: {
-                market: process.env.MARKET || 'US'
-            },
             headers: {
                 Authorization: `Bearer ${token}`
             }

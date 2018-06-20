@@ -9,7 +9,7 @@ const TRACK_ENDPOINT = trackId => `${API_BASE}v1/tracks/${trackId}`;
 function findTrack(track) {
 
     const id = extractID(track);
-
+    const market = process.env.MARKET || 'US';
     return auth.getToken()
         .then(token => request.get({
             uri: TRACK_ENDPOINT(id),
@@ -19,9 +19,9 @@ function findTrack(track) {
             }
         }))
         .catch(processRequestError)
-        .then(({ artists, name, uri, is_playable }) => {
+        .then(({ artists, name, uri, markets }) => {
             // eslint-disable-next-line camelcase
-            if (!is_playable) {
+            if (markets && !markets.includes(market)) {
                 const error = new Error('Track is not playable in US.');
                 error.statusCode = 405;
                 throw error;

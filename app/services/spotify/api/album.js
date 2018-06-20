@@ -8,6 +8,7 @@ const ALBUM_ENDPOINT = id => `${API_BASE}v1/albums/${id}`;
 
 function findAlbum(link) {
     const id = extractID(link);
+    const market = process.env.MARKET || 'US';
     return auth.getToken()
         .then(token => request.get({
             uri: ALBUM_ENDPOINT(id),
@@ -25,7 +26,7 @@ function findAlbum(link) {
 
             const parsedTracks = tracks.items
                 .filter(track =>
-                    track.is_playable
+                    !track.markets || track.markets.includes(market)
                 )
                 .map((track) => {
                     const artist = track.artists

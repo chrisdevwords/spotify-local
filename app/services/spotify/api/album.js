@@ -11,9 +11,6 @@ function findAlbum(link) {
     return auth.getToken()
         .then(token => request.get({
             uri: ALBUM_ENDPOINT(id),
-            qs: {
-                market: process.env.MARKET || 'US'
-            },
             json: true,
             headers: {
                 Authorization: `Bearer ${token}`

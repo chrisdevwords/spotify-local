@@ -85,12 +85,14 @@ server.listen(PORT, () => {
             .then(spotifyLocal.setPlaylist)
             .then(() => {
                 spotifyLocal.init(io.spotify);
+                setTimeout(openChrome, 1000)
             })
             .catch((err) => {
                 console.log('Error getting playlist', err);
             });
     } else {
         spotifyLocal.init(io.spotify);
+        setTimeout(openChrome, 1000)
     }
 
     slackTube.init(io.youtube, DEFAULT_YOUTUBE);

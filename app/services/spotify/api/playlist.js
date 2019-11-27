@@ -16,20 +16,19 @@ function parsePlaylist(val) {
         path = val.split(':');
     }
     return {
-        userId: path[2],
-        playlistId: path[4]
+        playlistId: path[path.length - 1]
     }
 }
 
-const PLAYLIST_ENDPOINT = (userId, playlistId) =>
-    `${API_BASE}v1/users/${userId}/playlists/${playlistId}`;
+const PLAYLIST_ENDPOINT = playlistId =>
+    `${API_BASE}v1/playlists/${playlistId}`;
 
 
 function findPlaylist(playlist) {
-    const { userId, playlistId } = parsePlaylist(playlist);
+    const { playlistId } = parsePlaylist(playlist);
     return auth.getToken()
         .then(token => request.get({
-            uri: PLAYLIST_ENDPOINT(userId, playlistId),
+            uri: PLAYLIST_ENDPOINT(playlistId),
             json: true,
             headers: {
                 Authorization: `Bearer ${token}`

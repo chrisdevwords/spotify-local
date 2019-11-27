@@ -1,3 +1,4 @@
+const childProcess = require('child_process');
 const http = require('http');
 const express = require('express');
 const dotenv = require('dotenv');
@@ -64,6 +65,17 @@ errorManager.configure(app);
 const server = http.createServer(app);
 const io = sockets.create(server);
 
+function openChrome() {
+    childProcess.exec(
+        `open -a "Google Chrome" http://${HOST}:${PORT}`,
+        (err) => {
+            if (err) {
+                // eslint-disable-next-line no-console
+                console.log(err);
+            }
+        });
+}
+
 server.listen(PORT, () => {
     /* eslint-disable no-console */
     console.log(`Listening on http://${HOST}:${PORT}`);
@@ -73,12 +85,14 @@ server.listen(PORT, () => {
             .then(spotifyLocal.setPlaylist)
             .then(() => {
                 spotifyLocal.init(io.spotify);
+                setTimeout(openChrome, 1000)
             })
             .catch((err) => {
                 console.log('Error getting playlist', err);
             });
     } else {
         spotifyLocal.init(io.spotify);
+        setTimeout(openChrome, 1000)
     }
 
     slackTube.init(io.youtube, DEFAULT_YOUTUBE);

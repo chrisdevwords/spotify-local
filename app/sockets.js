@@ -11,7 +11,6 @@ function create(server) {
     _io = socketIO(server);
     _spotify = _io.of('/spotify');
     _spotify.on('connection', (socket) => {
-        // eslint-disable-next-line no-console
         spotify
             .currentTrack()
             .then((currentTrack) => {
@@ -30,6 +29,19 @@ function create(server) {
                 socket.emit(slackTube.NOW_PLAYING, playing);
             });
     });
+
+    const main = _io.of('/main');
+
+    main.on('connection', (socket) => {
+        socket.on('quit', () => {
+            setTimeout(() => {
+                // eslint-disable-next-line no-console
+                console.log('Quitting.');
+                process.exit(0);
+            }, 1000)
+        });
+    });
+
     return { io: _io, spotify: _spotify, youtube: _youtube }
 }
 
